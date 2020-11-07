@@ -4,7 +4,7 @@
 using namespace std;
 
 #define N 3 // размер столбцов матриц
-#define M 6 // количество точек в фигуре
+#define M 3 // количество точек в фигуре
 #define angle 0.0174444444444444
 
 void mul_matrix(double fig[M][N], double mass[N][N])
@@ -87,10 +87,10 @@ double mD_right[N][N] = { {1, 0, 0},
 
 double hexagon[M][N] = { {100, 200, 1},
 						 {300, 400, 1},
-						 {150, 300, 1},
+						 {150, 300, 1}/*,
 						 {250, 450, 1}, 
 						 {350, 500, 1},
-						 {400, 350, 1} };
+						 {400, 350, 1}*/ };
 
 BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
 {
@@ -164,10 +164,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 
 		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1]); // 1
 		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1]); // 2
-		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1]); // 3
-		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1]); // 4
-		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1]); // 5
-		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1]); // 6
+		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[0][0], hexagon[0][1]); // 3
+		//Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1]); // 3
+		//Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1]); // 4
+		//Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1]); // 5
+		//Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1]); // 6
 
 		//закругляемся
 		ValidateRect(hWnd, NULL); // обновляем окно
