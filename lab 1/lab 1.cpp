@@ -65,7 +65,6 @@ void scale(double fig[M][N], double S)
 	mul_matrix(fig, Sx_Sy);
 }
 
-
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №1"; // объявляем строку-имя программы
@@ -112,7 +111,14 @@ void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1)
 
 	for (;;)
 	{
+		int color1 = GetPixel(hdc, x0, y0);
+		int A = GetRValue(color1);
+
 		SetPixel(hdc, x0, y0, RGB(0, 0, 255));
+
+		int color2 = GetPixel(hdc, x0, y0);
+		int B = GetRValue(color2);
+
 		if (x0 == x1 && y0 == y1) break;
 		e2 = err;
 		if (e2 > -dx) { err -= dy; x0 += sx; }
