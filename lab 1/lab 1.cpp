@@ -111,12 +111,12 @@ void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1)
 
 	for (;;)
 	{
-		int color1 = GetPixel(hdc, x0, y0);
+		COLORREF color1 = GetPixel(hdc, x0, y0);
 		int A = GetRValue(color1);
 
 		SetPixel(hdc, x0, y0, RGB(0, 0, 255));
 
-		int color2 = GetPixel(hdc, x0, y0);
+		COLORREF color2 = GetPixel(hdc, x0, y0);
 		int B = GetRValue(color2);
 
 		if (x0 == x1 && y0 == y1) break;

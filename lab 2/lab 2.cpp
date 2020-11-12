@@ -67,7 +67,7 @@ void scale(double fig[M][N], double S)
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
-char szProgName[] = "Компьютерная графика ЛР №1"; // объявляем строку-имя программы
+char szProgName[] = "Компьютерная графика ЛР №2"; // объявляем строку-имя программы
 
 double mD_up[N][N] = { {1, 0, 0},
 					   {0, 1, 0},
@@ -128,7 +128,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	//Создадим окно в памяти, заполнив аргументы CreateWindow
 	hWnd = CreateWindow(szProgName, //Имя программы
-		"Лабораторная работа №1", //Заголовок окна
+		"Лабораторная работа №2", //Заголовок окна
 		WS_OVERLAPPEDWINDOW, //Стиль окна - перекрывающееся
 		0, //положение окна на экране по х
 		0, //положение по у

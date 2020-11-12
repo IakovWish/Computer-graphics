@@ -1,67 +1,83 @@
 ﻿#include <iostream>
-#include "Paint.h"
+#include <Windows.h>
 
 using namespace std;
 
-#define N 3 // размер столбцов матриц
-#define M 6 // количество точек в фигуре
+#define N 4 // размер столбцов матриц
+#define M 8 // количество точек в фигуре
 #define angle 0.0174444444444444
 
 void mul_matrix(double fig[M][N], double mass[N][N])
 {
-	double res[M][N] = { 0,0,0 };
-	for (int k = 0; k < M; k++)
-	{
-		for (int i = 0; i < N; i++)
-		{
+	double res[M][N] = { 0,0,0,0 };
+	for (int k = 0; k < M; k++) {
+		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++)
-			{
 				res[k][i] += fig[k][j] * mass[j][i];
-			}
 		}
 	}
-	for (int k = 0; k < M; k++)
-	{
-		for (int i = 0; i < 3; i++)
-		{
+	for (int k = 0; k < M; k++) {
+		for (int i = 0; i < N; i++)
 			fig[k][i] = res[k][i];
-		}
 	}
 }
 
-void rotate(double fig[M][N], double angl)
+double aver(double fig[M][N], int cnt)
 {
-	double x1 = 0, y1 = 0;
-	for (int i = 0; i < M; i++)
+	double average = 0;
+	for (int i = 0; i < N; i++)
 	{
-		x1 += fig[i][0];
+		average += fig[i][cnt];
 	}
-	x1 = x1 / M;
-	for (int i = 0; i < M; i++)
-	{
-		y1 += fig[i][1];
-	}
-	y1 = y1 / M;
+	return average / N;
+}
 
-	double Angle[N][N] = { {cos(angl), sin(angl), 0},{ -sin(angl), cos(angl), 0},{x1 * (1 - cos(angl)) + y1 * sin(angl), y1 * (1 - cos(angl)) - x1 * sin(angl), 1} };
+void rotateX(double fig[M][N], double angl)
+{
+	double y = 0, z = 0;
+	y = aver(fig, 1);
+	z = aver(fig, 2);
+	double Angle[N][N] = { {1,0, 0, 0},
+						   {0 , cos(angl), sin(angl),0},
+						   {0, -sin(angl), cos(angl), 0},
+						   {0, y * (1 - cos(angl)) + z * sin(angl), z * (1 - cos(angl)) - y * sin(angl), 1} };
+	mul_matrix(fig, Angle);
+}
+
+void rotateY(double fig[M][N], double angl) 
+{
+	double x = 0, y = 0, z = 0;
+	x = aver(fig, 0);
+	z = aver(fig, 2);
+	double Angle[N][N] = { {cos(angl),0, -sin(angl), 0},
+						   {0, 1, 0,0},
+						   {sin(angl), 0, cos(angl), 0},
+						   {x * (1 - cos(angl)) - z * sin(angl), 0, z * (1 - cos(angl)) + x * sin(angl), 1} };
+	mul_matrix(fig, Angle);
+}
+
+void rotateZ(double fig[M][N], double angl)
+{
+	double x = 0, y = 0;
+	x = aver(fig, 0);
+	y = aver(fig, 1);
+	double Angle[N][N] = { {cos(angl), sin(angl), 0, 0},
+						   { -sin(angl), cos(angl), 0, 0},
+						   {0, 0, 1, 0},
+						   {x * (1 - cos(angl)) + y * sin(angl), y * (1 - cos(angl)) - x * sin(angl), 0, 1} };
 	mul_matrix(fig, Angle);
 }
 
 void scale(double fig[M][N], double S)
 {
-	double x1 = 0.0, y1 = 0.0;
-	for (int i = 0; i < M; i++)
-	{
-		x1 += fig[i][0];
-	}
-	x1 = x1 / M;
-
-	for (int i = 0; i < M; i++)
-	{
-		y1 += fig[i][1];
-	}
-	y1 = y1 / M;
-	double Sx_Sy[3][3] = { {S,0,0}, {0,S,0} ,{x1 * (1 - S),y1 * (1 - S),1} };
+	double x = 0, y = 0, z = 0;
+	x = aver(fig, 0);
+	y = aver(fig, 1);
+	z = aver(fig, 2);
+	double	Sx_Sy[N][N] = { {S,0,0,0},
+			  {0,S,0,0},
+			  {0,0,S,0},
+			  {x * (1 - S),y * (1 - S),z * (1 - S),1} };
 	mul_matrix(fig, Sx_Sy);
 }
 
@@ -69,28 +85,35 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прот
 
 char szProgName[] = "Компьютерная графика ЛР №2"; // объявляем строку-имя программы
 
-double mD_up[N][N] = { {1, 0, 0},
-					   {0, 1, 0},
-					   {0, -5, 1} };//матрица для перемещения наверх
+double mD_up[N][N] = { {1, 0, 0, 0},
+					   {0, 1, 0, 0},
+					   {0, 0, 1, 0}, 
+					   {0, -5, 0, 1} };//матрица для перемещения наверх
 
-double mD_down[N][N] = { {1, 0, 0},
-						 {0, 1, 0},
-						 {0, 5,1} };//матрица перемещения вниз
+double mD_down[N][N] = { {1, 0, 0, 0},
+					   {0, 1, 0, 0},
+					   {0, 0, 1, 0},
+					   {0, 5, 0, 1} };//матрица перемещения вниз
 
-double mD_left[N][N] = { {1, 0, 0},
-						 {0, 1, 0},
-						 {-5,0, 1} };//матрица для перемещения налево
+double mD_left[N][N] = { {1, 0, 0, 0},
+					   {0, 1, 0, 0},
+					   {0, 0, 1, 0},
+					   {-5, 0, 0, 1} };//матрица для перемещения налево
 
-double mD_right[N][N] = { {1, 0, 0},
-						  {0, 1, 0},
-						  {5, 0, 1} };//матрица перемещения направо
+double mD_right[N][N] = { {1, 0, 0, 0},
+					   {0, 1, 0, 0},
+					   {0, 0, 1, 0},
+					   {5, 0, 0, 1} };//матрица перемещения направо
 
-double hexagon[M][N] = { {100, 200, 1},
-						 {300, 400, 1},
-						 {150, 300, 1},
-						 {250, 450, 1},
-						 {350, 500, 1},
-						 {400, 350, 1} };
+double prism[M][N] = { {100, 400, 100, 1},
+						 {100, 200, 100, 1},
+						 {400, 200, 100, 1},
+						 {400, 400, 100, 1},
+						 {100, 400, 300, 1},
+						 {100, 200, 300, 1},
+						 {400, 200, 300, 1},
+						 {400, 400, 300, 1} };
+
 
 BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
 {
@@ -128,7 +151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	//Создадим окно в памяти, заполнив аргументы CreateWindow
 	hWnd = CreateWindow(szProgName, //Имя программы
-		"Лабораторная работа №3", //Заголовок окна
+		"Лабораторная работа №4", //Заголовок окна
 		WS_OVERLAPPEDWINDOW, //Стиль окна - перекрывающееся
 		0, //положение окна на экране по х
 		0, //положение по у
@@ -156,28 +179,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	HDC hdc; //создаём контекст устройства
 	PAINTSTRUCT ps; //создаём экземпляр структуры графического вывода
 
-	int polygon_points[20] = { hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1],
-								   hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1],
-								   hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1],
-								   hexagon[0][0], hexagon[0][1] };
-
 	//Цикл обработки сообщений
 	switch (messg)
 	{
 	case WM_PAINT: // сообщение рисования
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
-		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1]); // 1
-		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1]); // 2
-		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1]); // 3
-		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1]); // 4
-		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1]); // 5
-		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1]); // 6
-
+		Line(hdc, prism[0][0], prism[0][1], prism[1][0], prism[1][1]);
+		Line(hdc, prism[1][0], prism[1][1], prism[2][0], prism[2][1]);
+		Line(hdc, prism[2][0], prism[2][1], prism[3][0], prism[3][1]);
+		Line(hdc, prism[3][0], prism[3][1], prism[0][0], prism[0][1]);
 		
-
-		//Polygon(hdc, 7, polygon_points);
-		Fill_polygon(hdc, 7, polygon_points, 9);
+		Line(hdc, prism[4][0], prism[4][1], prism[5][0], prism[5][1]);
+		Line(hdc, prism[5][0], prism[5][1], prism[6][0], prism[6][1]);
+		Line(hdc, prism[6][0], prism[6][1], prism[7][0], prism[7][1]);
+		Line(hdc, prism[7][0], prism[7][1], prism[4][0], prism[4][1]);
+		
+		Line(hdc, prism[0][0], prism[0][1], prism[4][0], prism[4][1]);
+		Line(hdc, prism[1][0], prism[1][1], prism[5][0], prism[5][1]);
+		Line(hdc, prism[2][0], prism[2][1], prism[6][0], prism[6][1]);
+		Line(hdc, prism[3][0], prism[3][1], prism[7][0], prism[7][1]);
 
 		//закругляемся
 		ValidateRect(hWnd, NULL); // обновляем окно
@@ -190,35 +211,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		switch (wParam)
 		{
 		case VK_LEFT: // Обрабатывает клавишу LEFT ARROW (Стрелка влево).	<
-			mul_matrix(hexagon, mD_left);
+			mul_matrix(prism, mD_left);
 			break;
 
 		case VK_RIGHT: // Обрабатывает клавишу RIGHT ARROW (Стрелка вправо).	>
-			mul_matrix(hexagon, mD_right);
+			mul_matrix(prism, mD_right);
 			break;
 
 		case VK_UP: // Обрабатывает клавишу UP ARROW (Стрелка вверх).	\/
-			mul_matrix(hexagon, mD_up);
+			mul_matrix(prism, mD_up);
 			break;
 
 		case VK_DOWN: // Обрабатывает клавишу DOWN ARROW (Стрелка вниз).	^
-			mul_matrix(hexagon, mD_down);
+			mul_matrix(prism, mD_down);
 			break;
 
 		case 0xba: // Обрабатывает клавишу ;.	уменьшение
-			scale(hexagon, 0.9);
+			scale(prism, 0.9);
 			break;
 
 		case 0xde: // Обрабатывает клавишу '.	увеличение
-			scale(hexagon, 1.1);
+			scale(prism, 1.1);
 			break;
 
-		case 0xbe: // Обрабатывает клавишу ..	поворот влево
-			rotate(hexagon, -angle);
+		case 0x58: // Обрабатывает клавишу X.
+			rotateX(prism, angle);
 			break;
 
-		case 0xbf: // Обрабатывает клавишу /.	поворот вправо
-			rotate(hexagon, angle);
+		case 0x59: // Обрабатывает клавишу Y.
+			rotateY(prism, angle);
+			break;
+
+		case 0x5A: // Обрабатывает клавишу Z.
+			rotateZ(prism, angle);
 			break;
 
 		default:
