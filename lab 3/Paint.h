@@ -65,7 +65,7 @@ const int yNext(const int, const int, const PointCoordinates[]); //
 void Polygon(HDC, const int, const int[]); //
 void Lines(HDC, const int, const int, const int, const int);
 
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2);
+BOOL Line(HDC, int, int, int, int, int, int, int);
 
 void Fill_polygon(HDC hdc, const int n, const int ppts[], const int fill_color)
 {
@@ -243,7 +243,7 @@ void fillScan(HDC hdc, const int scan, const Edge* active, const int fill_color)
             SetPixel(hdc, count, scan, RGB(0, 0, 255));
         }*/
 
-        Line(hdc, p1->xIntersect, scan, p2->xIntersect, scan); //////////////////////////////////////
+        Line(hdc, p1->xIntersect, scan, p2->xIntersect, scan, 0,0,255); //////////////////////////////////////
 
         p1 = p2->next;
     }
@@ -382,12 +382,12 @@ void Lines(HDC hdc, const int x_1, const int y_1, const int x_2, const int y_2)
     }
 }
 
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
+BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r = 0, int g = 0, int b = 0) // обычная линия
 {
-    HPEN hPen; //Объявляется кисть
-    hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); //Создаётся объект
-    SelectObject(hdc, hPen); //Объект делается текущим
+	HPEN hPen; //Объявляется кисть
+	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
+	SelectObject(hdc, hPen); //Объект делается текущим
 
-    MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-    return LineTo(hdc, x2, y2);
+	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
+	return LineTo(hdc, x2, y2);
 }

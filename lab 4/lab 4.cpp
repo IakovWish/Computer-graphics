@@ -114,11 +114,10 @@ double prism[M][N] = { {100, 400, 100, 1},
 						 {400, 200, 300, 1},
 						 {400, 400, 300, 1} };
 
-
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
+BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r = 0, int g = 0, int b = 0) // обычная линия
 {
 	HPEN hPen; //Объявляется кисть
-	hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); //Создаётся объект
+	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
 	SelectObject(hdc, hPen); //Объект делается текущим
 
 	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1

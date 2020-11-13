@@ -8,10 +8,10 @@ using namespace std;
 #define angle 0.0174444444444444
 
 void mul_matrix(double fig[M][N], double mass[N][N]);
-void rotate(double fig[M][N], double angl);
-void scale(double fig[M][N], double S);
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2);
-void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1);
+void rotate(double fig[M][N], double);
+void scale(double fig[M][N], double);
+BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void bresenhamline(HDC, int, int, int, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №1"; // объявляем строку-имя программы
@@ -38,43 +38,6 @@ double library_line[M][N] = { {400, 500, 1},
 
 double bresenham_line[M][N] = { {500, 600, 1},
 								{200, 700, 1} }; // брезенхем
-
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2) // обычная линия
-{
-	HPEN hPen; //Объявляется кисть
-	hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); //Создаётся объект
-	SelectObject(hdc, hPen); //Объект делается текущим
-
-	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-	return LineTo(hdc, x2, y2);
-}
-
-void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1) // брезенхем
-{
-	int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-	int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
-	int err = (dx > dy ? dx : -dy) / 2;
-	int e2 = err;
-
-	for (;;)
-	{
-		SetPixel(hdc, x0, y0, RGB(0, 0, 255));
-
-		if (x0 == x1 && y0 == y1)
-		{
-			break;
-		}
-		e2 = err;
-		if (e2 > -dx)
-		{
-			err -= dy; x0 += sx;
-		}
-		if (e2 < dy) 
-		{ 
-			err += dx; y0 += sy; 
-		}
-	}
-}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -136,7 +99,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	case WM_PAINT: // сообщение рисования
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
-		Line(hdc, library_line[0][0], library_line[0][1], library_line[1][0], library_line[1][1]); // библиотечная линия
+		Line(hdc, library_line[0][0], library_line[0][1], library_line[1][0], library_line[1][1], 255); // библиотечная линия
 		bresenhamline(hdc, bresenham_line[0][0], bresenham_line[0][1], bresenham_line[1][0], bresenham_line[1][1]); // брезенхем
 
 		/*закругляемся*/
@@ -288,4 +251,41 @@ void scale(double fig[M][N], double S)
 	y1 = y1 / M;
 	double Sx_Sy[N][N] = { {S,0,0}, {0,S,0} , {x1 * (1 - S),y1 * (1 - S),1} };
 	mul_matrix(fig, Sx_Sy);
+}
+
+BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
+{
+	HPEN hPen; //Объявляется кисть
+	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
+	SelectObject(hdc, hPen); //Объект делается текущим
+
+	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
+	return LineTo(hdc, x2, y2);
+}
+
+void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1) // брезенхем
+{
+	int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+	int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+	int err = (dx > dy ? dx : -dy) / 2;
+	int e2 = err;
+
+	for (;;)
+	{
+		SetPixel(hdc, x0, y0, RGB(0, 0, 255));
+
+		if (x0 == x1 && y0 == y1)
+		{
+			break;
+		}
+		e2 = err;
+		if (e2 > -dx)
+		{
+			err -= dy; x0 += sx;
+		}
+		if (e2 < dy)
+		{
+			err += dx; y0 += sy;
+		}
+	}
 }
