@@ -10,7 +10,7 @@ using namespace std;
 void mul_matrix(double fig[M][N], double mass[N][N]);
 void rotate(double fig[M][N], double);
 void scale(double fig[M][N], double);
-BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void bresenhamline(HDC, int, int, int, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
@@ -253,14 +253,15 @@ void scale(double fig[M][N], double S)
 	mul_matrix(fig, Sx_Sy);
 }
 
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
+void Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
 {
 	HPEN hPen; //Объявляется кисть
 	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
 	SelectObject(hdc, hPen); //Объект делается текущим
 
 	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-	return LineTo(hdc, x2, y2);
+	LineTo(hdc, x2, y2);
+	DeleteObject(hPen);
 }
 
 void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1) // брезенхем

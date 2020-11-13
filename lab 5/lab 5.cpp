@@ -116,26 +116,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		bresenhamline(hdc, prism[2][0], prism[2][1], prism[3][0], prism[3][1], 0, 0, 255);
 		bresenhamline(hdc, prism[3][0], prism[3][1], prism[0][0], prism[0][1], 0, 0, 255);
 
-		for (int i = 0; i < m; i++, k++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
-
 		bresenhamline(hdc, prism[4][0], prism[4][1], prism[5][0], prism[5][1], 255, 0, 0);
 		bresenhamline(hdc, prism[5][0], prism[5][1], prism[6][0], prism[6][1], 255, 0, 0);
 		bresenhamline(hdc, prism[6][0], prism[6][1], prism[7][0], prism[7][1], 255, 0, 0);
 		bresenhamline(hdc, prism[7][0], prism[7][1], prism[4][0], prism[4][1], 255, 0, 0);
-
-		for (int i = 0; i < m; i++, k++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
 
 		bresenhamline(hdc, prism[0][0], prism[0][1], prism[4][0], prism[4][1], 0, 255, 0);
 		bresenhamline(hdc, prism[1][0], prism[1][1], prism[5][0], prism[5][1], 0, 255, 0);
@@ -143,6 +127,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		bresenhamline(hdc, prism[3][0], prism[3][1], prism[7][0], prism[7][1], 0, 255, 0);
 
 		for (int i = 0; i < m; i++)
+		{
+			sq[i][0] = prism[k][0];
+			sq[i][1] = prism[k][1];
+		}
+
+		Fill_polygon(hdc, sq);
+
+		for (int i = 0; i < m; i++, k++)
+		{
+			sq[i][0] = prism[k][0];
+			sq[i][1] = prism[k][1];
+		}
+
+		Fill_polygon(hdc, sq);
+
+		for (int i = 0; i < m; i++, k++)
+		{
+			sq[i][0] = prism[k][0];
+			sq[i][1] = prism[k][1];
+		}
+
+		Fill_polygon(hdc, sq);
+
+		for (int i = 0; i < m; i++, k++)
+		{
+			sq[i][0] = prism[k][0];
+			sq[i][1] = prism[k][1];
+		}
+
+		Fill_polygon(hdc, sq);
+
+		for (int i = 0; i < m; i++, k++)
+		{
+			sq[i][0] = prism[k][0];
+			sq[i][1] = prism[k][1];
+		}
+
+		Fill_polygon(hdc, sq);
+
+		for (int i = 0; i < m; i++, k++)
 		{
 			sq[i][0] = prism[k][0];
 			sq[i][1] = prism[k][1];
@@ -288,41 +312,4 @@ void scale(double fig[M][N], double S)
 			  {0,0,S,0},
 			  {x * (1 - S),y * (1 - S),z * (1 - S),1} };
 	mul_matrix(fig, Sx_Sy);
-}
-
-//void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1, int r, int g, int b) // брезенхем
-//{
-//	int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-//	int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
-//	int err = (dx > dy ? dx : -dy) / 2;
-//	int e2 = err;
-//
-//	for (;;)
-//	{
-//		SetPixel(hdc, x0, y0, RGB(r, g, b));
-//
-//		if (x0 == x1 && y0 == y1)
-//		{
-//			break;
-//		}
-//		e2 = err;
-//		if (e2 > -dx)
-//		{
-//			err -= dy; x0 += sx;
-//		}
-//		if (e2 < dy)
-//		{
-//			err += dx; y0 += sy;
-//		}
-//	}
-//}
-
-//BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r = 0, int g = 0, int b = 0) // обычная линия
-//{
-//	HPEN hPen; //Объявляется кисть
-//	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
-//	SelectObject(hdc, hPen); //Объект делается текущим
-//
-//	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-//	return LineTo(hdc, x2, y2);
-//}
+}	

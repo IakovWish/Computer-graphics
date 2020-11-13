@@ -12,7 +12,7 @@ void scale(double fig[M][N], double);
 void rotateX(double fig[M][N], double);
 void rotateY(double fig[M][N], double);
 void rotateZ(double fig[M][N], double);
-//BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
@@ -290,12 +290,13 @@ void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1, int r, int g, int b)
 	}
 }
 
-//BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r = 0, int g = 0, int b = 0) // обычная линия
-//{
-//	HPEN hPen; //Объявляется кисть
-//	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
-//	SelectObject(hdc, hPen); //Объект делается текущим
-//
-//	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-//	return LineTo(hdc, x2, y2);
-//}
+void Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
+{
+	HPEN hPen; //Объявляется кисть
+	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
+	SelectObject(hdc, hPen); //Объект делается текущим
+
+	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
+	LineTo(hdc, x2, y2);
+	DeleteObject(hPen);
+}

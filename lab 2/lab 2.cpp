@@ -227,13 +227,12 @@ void scale(double fig[M][N], double S)
 
 void Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
 {
-	HPEN hPen; // Объявляется кисть
-	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); // Создаётся объект
-	SelectObject(hdc, hPen); // Объект делается текущим
+	HPEN hPen; //Объявляется кисть
+	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
+	SelectObject(hdc, hPen); //Объект делается текущим
 
-	MoveToEx(hdc, x1, y1, NULL); // сделать текущими координаты x1, y1
+	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
 	LineTo(hdc, x2, y2);
-	SelectObject(hdc, hPen);
 	DeleteObject(hPen);
 }
 

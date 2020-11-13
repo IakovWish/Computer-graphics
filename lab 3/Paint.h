@@ -264,7 +264,6 @@ void Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычн
 
 	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
 	LineTo(hdc, x2, y2);
-    SelectObject(hdc, hPen);
     DeleteObject(hPen);
 }
 
