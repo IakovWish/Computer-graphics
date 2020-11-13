@@ -7,83 +7,16 @@ using namespace std;
 #define M 8 // количество точек в фигуре
 #define angle 0.0174444444444444
 
-void mul_matrix(double fig[M][N], double mass[N][N])
-{
-	double res[M][N] = { 0,0,0,0 };
-	for (int k = 0; k < M; k++) {
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++)
-				res[k][i] += fig[k][j] * mass[j][i];
-		}
-	}
-	for (int k = 0; k < M; k++) {
-		for (int i = 0; i < N; i++)
-			fig[k][i] = res[k][i];
-	}
-}
-
-double aver(double fig[M][N], int cnt)
-{
-	double average = 0;
-	for (int i = 0; i < N; i++)
-	{
-		average += fig[i][cnt];
-	}
-	return average / N;
-}
-
-void rotateX(double fig[M][N], double angl)
-{
-	double y = 0, z = 0;
-	y = aver(fig, 1);
-	z = aver(fig, 2);
-	double Angle[N][N] = { {1,0, 0, 0},
-						   {0 , cos(angl), sin(angl),0},
-						   {0, -sin(angl), cos(angl), 0},
-						   {0, y * (1 - cos(angl)) + z * sin(angl), z * (1 - cos(angl)) - y * sin(angl), 1} };
-	mul_matrix(fig, Angle);
-}
-
-void rotateY(double fig[M][N], double angl) 
-{
-	double x = 0, y = 0, z = 0;
-	x = aver(fig, 0);
-	z = aver(fig, 2);
-	double Angle[N][N] = { {cos(angl),0, -sin(angl), 0},
-						   {0, 1, 0,0},
-						   {sin(angl), 0, cos(angl), 0},
-						   {x * (1 - cos(angl)) - z * sin(angl), 0, z * (1 - cos(angl)) + x * sin(angl), 1} };
-	mul_matrix(fig, Angle);
-}
-
-void rotateZ(double fig[M][N], double angl)
-{
-	double x = 0, y = 0;
-	x = aver(fig, 0);
-	y = aver(fig, 1);
-	double Angle[N][N] = { {cos(angl), sin(angl), 0, 0},
-						   { -sin(angl), cos(angl), 0, 0},
-						   {0, 0, 1, 0},
-						   {x * (1 - cos(angl)) + y * sin(angl), y * (1 - cos(angl)) - x * sin(angl), 0, 1} };
-	mul_matrix(fig, Angle);
-}
-
-void scale(double fig[M][N], double S)
-{
-	double x = 0, y = 0, z = 0;
-	x = aver(fig, 0);
-	y = aver(fig, 1);
-	z = aver(fig, 2);
-	double	Sx_Sy[N][N] = { {S,0,0,0},
-			  {0,S,0,0},
-			  {0,0,S,0},
-			  {x * (1 - S),y * (1 - S),z * (1 - S),1} };
-	mul_matrix(fig, Sx_Sy);
-}
-
+void mul_matrix(double fig[M][N], double mass[N][N]);
+void scale(double fig[M][N], double);
+void rotateX(double fig[M][N], double);
+void rotateY(double fig[M][N], double);
+void rotateZ(double fig[M][N], double);
+//BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
-char szProgName[] = "Компьютерная графика ЛР №2"; // объявляем строку-имя программы
+char szProgName[] = "Компьютерная графика ЛР №4"; // объявляем строку-имя программы
 
 double mD_up[N][N] = { {1, 0, 0, 0},
 					   {0, 1, 0, 0},
@@ -113,16 +46,6 @@ double prism[M][N] = { {100, 400, 100, 1},
 						 {100, 200, 300, 1},
 						 {400, 200, 300, 1},
 						 {400, 400, 300, 1} };
-
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r = 0, int g = 0, int b = 0) // обычная линия
-{
-	HPEN hPen; //Объявляется кисть
-	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
-	SelectObject(hdc, hPen); //Объект делается текущим
-
-	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-	return LineTo(hdc, x2, y2);
-}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -184,20 +107,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	case WM_PAINT: // сообщение рисования
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
-		Line(hdc, prism[0][0], prism[0][1], prism[1][0], prism[1][1]);
-		Line(hdc, prism[1][0], prism[1][1], prism[2][0], prism[2][1]);
-		Line(hdc, prism[2][0], prism[2][1], prism[3][0], prism[3][1]);
-		Line(hdc, prism[3][0], prism[3][1], prism[0][0], prism[0][1]);
+		bresenhamline(hdc, prism[0][0], prism[0][1], prism[1][0], prism[1][1], 0, 0, 255);
+		bresenhamline(hdc, prism[1][0], prism[1][1], prism[2][0], prism[2][1], 0, 0, 255);
+		bresenhamline(hdc, prism[2][0], prism[2][1], prism[3][0], prism[3][1], 0, 0, 255);
+		bresenhamline(hdc, prism[3][0], prism[3][1], prism[0][0], prism[0][1], 0, 0, 255);
 		
-		Line(hdc, prism[4][0], prism[4][1], prism[5][0], prism[5][1]);
-		Line(hdc, prism[5][0], prism[5][1], prism[6][0], prism[6][1]);
-		Line(hdc, prism[6][0], prism[6][1], prism[7][0], prism[7][1]);
-		Line(hdc, prism[7][0], prism[7][1], prism[4][0], prism[4][1]);
+		bresenhamline(hdc, prism[4][0], prism[4][1], prism[5][0], prism[5][1], 255, 0, 0);
+		bresenhamline(hdc, prism[5][0], prism[5][1], prism[6][0], prism[6][1], 255, 0, 0);
+		bresenhamline(hdc, prism[6][0], prism[6][1], prism[7][0], prism[7][1], 255, 0, 0);
+		bresenhamline(hdc, prism[7][0], prism[7][1], prism[4][0], prism[4][1], 255, 0, 0);
 		
-		Line(hdc, prism[0][0], prism[0][1], prism[4][0], prism[4][1]);
-		Line(hdc, prism[1][0], prism[1][1], prism[5][0], prism[5][1]);
-		Line(hdc, prism[2][0], prism[2][1], prism[6][0], prism[6][1]);
-		Line(hdc, prism[3][0], prism[3][1], prism[7][0], prism[7][1]);
+		bresenhamline(hdc, prism[0][0], prism[0][1], prism[4][0], prism[4][1], 0, 255, 0);
+		bresenhamline(hdc, prism[1][0], prism[1][1], prism[5][0], prism[5][1], 0, 255, 0);
+		bresenhamline(hdc, prism[2][0], prism[2][1], prism[6][0], prism[6][1], 0, 255, 0);
+		bresenhamline(hdc, prism[3][0], prism[3][1], prism[7][0], prism[7][1], 0, 255, 0);
 
 		//закругляемся
 		ValidateRect(hWnd, NULL); // обновляем окно
@@ -264,3 +187,114 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	}
 	return 0;
 }
+
+void mul_matrix(double fig[M][N], double mass[N][N])
+{
+	double res[M][N] = { 0,0,0,0 };
+	for (int k = 0; k < M; k++) {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++)
+				res[k][i] += fig[k][j] * mass[j][i];
+		}
+	}
+	for (int k = 0; k < M; k++) {
+		for (int i = 0; i < N; i++)
+			fig[k][i] = res[k][i];
+	}
+}
+
+double aver(double fig[M][N], int cnt)
+{
+	double average = 0;
+	for (int i = 0; i < N; i++)
+	{
+		average += fig[i][cnt];
+	}
+	return average / N;
+}
+
+void rotateX(double fig[M][N], double angl)
+{
+	double y = 0, z = 0;
+	y = aver(fig, 1);
+	z = aver(fig, 2);
+	double Angle[N][N] = { {1,0, 0, 0},
+						   {0 , cos(angl), sin(angl),0},
+						   {0, -sin(angl), cos(angl), 0},
+						   {0, y * (1 - cos(angl)) + z * sin(angl), z * (1 - cos(angl)) - y * sin(angl), 1} };
+	mul_matrix(fig, Angle);
+}
+
+void rotateY(double fig[M][N], double angl)
+{
+	double x = 0, y = 0, z = 0;
+	x = aver(fig, 0);
+	z = aver(fig, 2);
+	double Angle[N][N] = { {cos(angl),0, -sin(angl), 0},
+						   {0, 1, 0,0},
+						   {sin(angl), 0, cos(angl), 0},
+						   {x * (1 - cos(angl)) - z * sin(angl), 0, z * (1 - cos(angl)) + x * sin(angl), 1} };
+	mul_matrix(fig, Angle);
+}
+
+void rotateZ(double fig[M][N], double angl)
+{
+	double x = 0, y = 0;
+	x = aver(fig, 0);
+	y = aver(fig, 1);
+	double Angle[N][N] = { {cos(angl), sin(angl), 0, 0},
+						   { -sin(angl), cos(angl), 0, 0},
+						   {0, 0, 1, 0},
+						   {x * (1 - cos(angl)) + y * sin(angl), y * (1 - cos(angl)) - x * sin(angl), 0, 1} };
+	mul_matrix(fig, Angle);
+}
+
+void scale(double fig[M][N], double S)
+{
+	double x = 0, y = 0, z = 0;
+	x = aver(fig, 0);
+	y = aver(fig, 1);
+	z = aver(fig, 2);
+	double	Sx_Sy[N][N] = { {S,0,0,0},
+			  {0,S,0,0},
+			  {0,0,S,0},
+			  {x * (1 - S),y * (1 - S),z * (1 - S),1} };
+	mul_matrix(fig, Sx_Sy);
+}
+
+void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1, int r, int g, int b) // брезенхем
+{
+	int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+	int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+	int err = (dx > dy ? dx : -dy) / 2;
+	int e2 = err;
+
+	for (;;)
+	{
+		SetPixel(hdc, x0, y0, RGB(r, g, b));
+
+		if (x0 == x1 && y0 == y1)
+		{
+			break;
+		}
+		e2 = err;
+		if (e2 > -dx)
+		{
+			err -= dy; x0 += sx;
+		}
+		if (e2 < dy)
+		{
+			err += dx; y0 += sy;
+		}
+	}
+}
+
+//BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r = 0, int g = 0, int b = 0) // обычная линия
+//{
+//	HPEN hPen; //Объявляется кисть
+//	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
+//	SelectObject(hdc, hPen); //Объект делается текущим
+//
+//	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
+//	return LineTo(hdc, x2, y2);
+//}
