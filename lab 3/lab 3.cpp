@@ -7,67 +7,14 @@ using namespace std;
 #define M 6 // количество точек в фигуре
 #define angle 0.0174444444444444
 
-void mul_matrix(double fig[M][N], double mass[N][N])
-{
-	double res[M][N] = { 0,0,0 };
-	for (int k = 0; k < M; k++)
-	{
-		for (int i = 0; i < N; i++)
-		{
-			for (int j = 0; j < N; j++)
-			{
-				res[k][i] += fig[k][j] * mass[j][i];
-			}
-		}
-	}
-	for (int k = 0; k < M; k++)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			fig[k][i] = res[k][i];
-		}
-	}
-}
-
-void rotate(double fig[M][N], double angl)
-{
-	double x1 = 0, y1 = 0;
-	for (int i = 0; i < M; i++)
-	{
-		x1 += fig[i][0];
-	}
-	x1 = x1 / M;
-	for (int i = 0; i < M; i++)
-	{
-		y1 += fig[i][1];
-	}
-	y1 = y1 / M;
-
-	double Angle[N][N] = { {cos(angl), sin(angl), 0},{ -sin(angl), cos(angl), 0},{x1 * (1 - cos(angl)) + y1 * sin(angl), y1 * (1 - cos(angl)) - x1 * sin(angl), 1} };
-	mul_matrix(fig, Angle);
-}
-
-void scale(double fig[M][N], double S)
-{
-	double x1 = 0.0, y1 = 0.0;
-	for (int i = 0; i < M; i++)
-	{
-		x1 += fig[i][0];
-	}
-	x1 = x1 / M;
-
-	for (int i = 0; i < M; i++)
-	{
-		y1 += fig[i][1];
-	}
-	y1 = y1 / M;
-	double Sx_Sy[3][3] = { {S,0,0}, {0,S,0} ,{x1 * (1 - S),y1 * (1 - S),1} };
-	mul_matrix(fig, Sx_Sy);
-}
-
+void mul_matrix(double fig[M][N], double mass[N][N]);
+void rotate(double fig[M][N], double angl);
+void scale(double fig[M][N], double S);
+//BOOL Line(HDC hdc, int x1, int y1, int x2, int y2);
+//void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
-char szProgName[] = "Компьютерная графика ЛР №2"; // объявляем строку-имя программы
+char szProgName[] = "Компьютерная графика ЛР №3"; // объявляем строку-имя программы
 
 double mD_up[N][N] = { {1, 0, 0},
 					   {0, 1, 0},
@@ -91,16 +38,6 @@ double hexagon[M][N] = { {100, 200, 1},
 						 {250, 450, 1},
 						 {350, 500, 1},
 						 {400, 350, 1} };
-
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
-{
-	HPEN hPen; //Объявляется кисть
-	hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); //Создаётся объект
-	SelectObject(hdc, hPen); //Объект делается текущим
-
-	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-	return LineTo(hdc, x2, y2);
-}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -156,10 +93,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	HDC hdc; //создаём контекст устройства
 	PAINTSTRUCT ps; //создаём экземпляр структуры графического вывода
 
-	int polygon_points[20] = { hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1],
-								   hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1],
-								   hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1],
-								   hexagon[0][0], hexagon[0][1] };
+	int polygon_points[20] = { hexagon[0][0], hexagon[0][1], 
+							   hexagon[1][0], hexagon[1][1],
+							   hexagon[2][0], hexagon[2][1],
+							   hexagon[3][0], hexagon[3][1],
+							   hexagon[4][0], hexagon[4][1],
+							   hexagon[5][0], hexagon[5][1],
+							   hexagon[0][0], hexagon[0][1] };
 
 	//Цикл обработки сообщений
 	switch (messg)
@@ -173,14 +113,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1]); // 4
 		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1]); // 5
 		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1]); // 6
-
 		
-
-		//Polygon(hdc, 7, polygon_points);
 		Fill_polygon(hdc, 7, polygon_points, 9);
 
 		//закругляемся
-		ValidateRect(hWnd, NULL); // обновляем окно
 		EndPaint(hWnd, &ps); // заканчиваем рисовать
 		break;
 
@@ -239,4 +175,62 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		return(DefWindowProc(hWnd, messg, wParam, lParam)); //освобождаем очередь приложения от нераспознаных
 	}
 	return 0;
+}
+
+void mul_matrix(double fig[M][N], double mass[N][N])
+{
+	double res[M][N] = { 0,0,0 };
+	for (int k = 0; k < M; k++)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				res[k][i] += fig[k][j] * mass[j][i];
+			}
+		}
+	}
+	for (int k = 0; k < M; k++)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			fig[k][i] = res[k][i];
+		}
+	}
+}
+
+void rotate(double fig[M][N], double angl)
+{
+	double x1 = 0, y1 = 0;
+	for (int i = 0; i < M; i++)
+	{
+		x1 += fig[i][0];
+	}
+	x1 = x1 / M;
+	for (int i = 0; i < M; i++)
+	{
+		y1 += fig[i][1];
+	}
+	y1 = y1 / M;
+
+	double Angle[N][N] = { {cos(angl), sin(angl), 0},{ -sin(angl), cos(angl), 0},{x1 * (1 - cos(angl)) + y1 * sin(angl), y1 * (1 - cos(angl)) - x1 * sin(angl), 1} };
+	mul_matrix(fig, Angle);
+}
+
+void scale(double fig[M][N], double S)
+{
+	double x1 = 0.0, y1 = 0.0;
+	for (int i = 0; i < M; i++)
+	{
+		x1 += fig[i][0];
+	}
+	x1 = x1 / M;
+
+	for (int i = 0; i < M; i++)
+	{
+		y1 += fig[i][1];
+	}
+	y1 = y1 / M;
+	double Sx_Sy[3][3] = { {S,0,0}, {0,S,0} ,{x1 * (1 - S),y1 * (1 - S),1} };
+	mul_matrix(fig, Sx_Sy);
 }

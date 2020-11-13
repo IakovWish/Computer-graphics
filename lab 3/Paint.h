@@ -3,12 +3,12 @@
 class Edge
 {
 public:
-    int yUpper;
+    int yUpper; // верхн€€ граница y
 
-    float xIntersect;
-    float dxPerScan;
+    float xIntersect; // x-пересечение
+    float dxPerScan; // 
 
-    Edge* next;
+    Edge* next; 
 };
 
 class PointCoordinates
@@ -49,26 +49,23 @@ public:
     }
 };
 
-//void show_screen();
+void Fill_polygon(HDC, const int, const int[], const int); // 
 
-void Fill_polygon(HDC, const int, const int[], const int);
-
-void insertEdge(Edge*, Edge*);
-void makeEdgeRec(const PointCoordinates, const PointCoordinates, const int, Edge*, Edge* []);
-void buildEdgeList(const int, const PointCoordinates[], Edge* []);
-void buildActiveList(const int, Edge*, Edge* []);
-void fillScan(HDC, const int, const Edge*, const int);
+void insertEdge(Edge*, Edge*); //
+void makeEdgeRec(const PointCoordinates, const PointCoordinates, const int, Edge*, Edge* []); //
+void buildEdgeList(const int, const PointCoordinates[], Edge* []); //
+void buildActiveList(const int, Edge*, Edge* []); //
+void fillScan(HDC, const int, const Edge*, const int); //
 void deleteAfter(Edge[]);
-void updateActiveList(const int, Edge*);
-void resortActiveList(Edge[]);
+void updateActiveList(const int, Edge*); //
+void resortActiveList(Edge[]); //
 
-const int yNext(const int, const int, const PointCoordinates[]);
+const int yNext(const int, const int, const PointCoordinates[]); //
 
-void Polygon(HDC, const int, const int[]);
+void Polygon(HDC, const int, const int[]); //
 void Lines(HDC, const int, const int, const int, const int);
 
-
-
+BOOL Line(HDC hdc, int x1, int y1, int x2, int y2);
 
 void Fill_polygon(HDC hdc, const int n, const int ppts[], const int fill_color)
 {
@@ -89,7 +86,7 @@ void Fill_polygon(HDC hdc, const int n, const int ppts[], const int fill_color)
         edges[count_2]->next = NULL;
     }
 
-    buildEdgeList(7, pts, edges);
+    buildEdgeList(n, pts, edges);
 
     active = new Edge;
     active->next = NULL;
@@ -116,18 +113,24 @@ const int yNext(const int k, const int cnt, const PointCoordinates pts[])
     int j;
 
     if ((k + 1) > (cnt - 1))
+    {
         j = 0;
-
+    }
     else
+    {
         j = (k + 1);
+    }
 
     while (pts[k].y == pts[j].y)
     {
         if ((j + 1) > (cnt - 1))
+        {
             j = 0;
-
+        }
         else
+        {
             j++;
+        }
     }
 
     return (pts[j].y);
@@ -143,8 +146,9 @@ void insertEdge(Edge* list, Edge* edge)
     while (p != NULL)
     {
         if (edge->xIntersect < p->xIntersect)
+        {
             p = NULL;
-
+        }
         else
         {
             q = p;
@@ -162,10 +166,13 @@ void makeEdgeRec(const PointCoordinates lower, const PointCoordinates upper, con
     edge->xIntersect = lower.x;
 
     if (upper.y < yComp)
+    {
         edge->yUpper = (upper.y - 1);
-
+    }
     else
+    {
         edge->yUpper = upper.y;
+    }
 
     insertEdge(edges[(int)lower.y], edge);
 }
@@ -190,12 +197,14 @@ void buildEdgeList(const int cnt, const PointCoordinates pts[], Edge* edges[])
             edge = new Edge;
 
             if (v1.y < v2.y)
+            {
                 makeEdgeRec(v1, v2, yNext(count, cnt, pts), edge, edges);
-
+            }
             else
+            {
                 makeEdgeRec(v2, v1, yPrev, edge, edges);
+            }
         }
-
         yPrev = v1.y;
         v1 = v2;
     }
@@ -229,10 +238,12 @@ void fillScan(HDC hdc, const int scan, const Edge* active, const int fill_color)
     {
         p2 = p1->next;
 
-        for (int count = p1->xIntersect; count <= p2->xIntersect; count++)
+        /*for (int count = p1->xIntersect; count <= p2->xIntersect; count++)
         {
             SetPixel(hdc, count, scan, RGB(0, 0, 255));
-        }
+        }*/
+
+        Line(hdc, p1->xIntersect, scan, p2->xIntersect, scan); //////////////////////////////////////
 
         p1 = p2->next;
     }
@@ -241,9 +252,7 @@ void fillScan(HDC hdc, const int scan, const Edge* active, const int fill_color)
 void deleteAfter(Edge* q)
 {
     Edge* p = q->next;
-
     q->next = p->next;
-
     delete p;
 }
 
@@ -257,10 +266,8 @@ void updateActiveList(const int scan, Edge* active)
         if (scan >= p->yUpper)
         {
             p = p->next;
-
             deleteAfter(q);
         }
-
         else
         {
             p->xIntersect = (p->xIntersect + p->dxPerScan);
@@ -280,9 +287,7 @@ void resortActiveList(Edge* active)
     while (p)
     {
         q = p->next;
-
         insertEdge(active, p);
-
         p = q;
     }
 }
@@ -294,14 +299,14 @@ void Polygon(HDC hdc, const int n, const int coordinates[])
         Lines(hdc, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
 
         for (int count = 1; count < (n - 1); count++)
+        {
             Lines(hdc, coordinates[(count * 2)], coordinates[((count * 2) + 1)], coordinates[((count + 1) * 2)], coordinates[(((count + 1) * 2) + 1)]);
+        }
     }
 }
 
 void Lines(HDC hdc, const int x_1, const int y_1, const int x_2, const int y_2)
 {
-    int color = 5/*getcolor()*/;
-
     int x1 = x_1;
     int y1 = y_1;
 
@@ -335,20 +340,18 @@ void Lines(HDC hdc, const int x_1, const int y_1, const int x_2, const int y_2)
         while (x < x2)
         {
             x++;
-
             if (p < 0)
+            {
                 p += two_dy;
-
+            }
             else
             {
                 y += inc_dec;
                 p += two_dy_dx;
             }
-
             SetPixel(hdc, x, y, RGB(0, 0, 255));
         }
     }
-
     else
     {
         int two_dx = (2 * dx);
@@ -365,8 +368,9 @@ void Lines(HDC hdc, const int x_1, const int y_1, const int x_2, const int y_2)
             y += inc_dec;
 
             if (p < 0)
+            {
                 p += two_dx;
-
+            }
             else
             {
                 x++;
@@ -376,4 +380,14 @@ void Lines(HDC hdc, const int x_1, const int y_1, const int x_2, const int y_2)
             SetPixel(hdc, x, y, RGB(0, 0, 255));
         }
     }
+}
+
+BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
+{
+    HPEN hPen; //ќбъ€вл€етс€ кисть
+    hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); //—оздаЄтс€ объект
+    SelectObject(hdc, hPen); //ќбъект делаетс€ текущим
+
+    MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
+    return LineTo(hdc, x2, y2);
 }
