@@ -3,6 +3,9 @@
 #define N 3 // размер столбцов матриц
 #define M 6 // количество точек в фигуре
 
+#define X 0
+#define Y 1
+
 class Edge
 {
 public:
@@ -11,89 +14,39 @@ public:
     double xIntersect; // x-пересечение
     double dxPerScan; // 
 
-    Edge* next; 
-};
-
-//class PointCoordinates
-//{
-//public:
-//    double x;
-//    double y;
-//
-//    PointCoordinates()
-//    {
-//        x = 0;
-//        y = 0;
-//    }
-//};
-
-class LineCoordinates
-{
-public:
-    double x_1;
-    double y_1;
-    double x_2;
-    double y_2;
-
-    LineCoordinates()
-    {
-        x_1 = 0;
-        y_1 = 0;
-        x_2 = 0;
-        y_2 = 0;
-    }
-
-    LineCoordinates(const double x1, const double y1, const double x2, const double y2)
-    {
-        x_1 = x1;
-        y_1 = y1;
-        x_2 = x2;
-        y_2 = y2;
-    }
+    Edge* next;
 };
 
 void Fill_polygon(HDC, const double[M][N]); // 
 
 void insertEdge(Edge*, Edge*); //
-void makeEdgeRec(const /*PointCoordinates*/double, const /*PointCoordinates*/double, const double,const double, const int, Edge*, Edge* []); //
-void buildEdgeList(/*const PointCoordinates[]*/const double[M][N], Edge* []); //
+void makeEdgeRec(const double, const double, const double,const double, const int, Edge*, Edge* []); //
+void buildEdgeList(const double[M][N], Edge* []); //
 void buildActiveList(const int, Edge*, Edge* []); //
 void fillScan(HDC, const int, const Edge*); //
 void deleteAfter(Edge[]);
 void updateActiveList(const int, Edge*); //
 void resortActiveList(Edge[]); //
 
-const int yNext(const int, const /*PointCoordinates[]*/double[M][N]); //
+const int yNext(const int, const double[M][N]); //
 
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
-//BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 
 void Fill_polygon(HDC hdc, const double ppts[M][N])
 {
     Edge* edges[520];
     Edge* active;
 
-    //PointCoordinates* pts = new PointCoordinates[M+1];
-
-    //int count_1;
-    //for (count_1 = 0; count_1 < M; count_1++)
-    //{
-    //    pts[count_1].x = (ppts[count_1][0]);
-    //    pts[count_1].y = (ppts[count_1][1]);
-    //}
-    //pts[count_1].x = (ppts[0][0]);
-    //pts[count_1].y = (ppts[0][1]);
-
-
     double pppts[M+1][N];
     int count_1;
     for (count_1 = 0; count_1 < M; count_1++)
     {
-        pppts[count_1][0] = (ppts[count_1][0]);
-        pppts[count_1][1] = (ppts[count_1][1]);
+        pppts[count_1][X] = (ppts[count_1][X]);
+        pppts[count_1][Y] = (ppts[count_1][Y]);
     }
-    pppts[count_1][0] = ppts[0][0];
-    pppts[count_1][1] = ppts[0][1];
+    pppts[count_1][X] = ppts[0][X];
+    pppts[count_1][Y] = ppts[0][Y];
 
     for (int count_2 = 0; count_2 < 520; count_2++)
     {
@@ -101,7 +54,7 @@ void Fill_polygon(HDC hdc, const double ppts[M][N])
         edges[count_2]->next = NULL;
     }
 
-    buildEdgeList(/*pts*/pppts, edges);
+    buildEdgeList(pppts, edges);
 
     active = new Edge;
     active->next = NULL;
@@ -117,11 +70,9 @@ void Fill_polygon(HDC hdc, const double ppts[M][N])
             resortActiveList(active);
         }
     }
-
-    //delete[] pts;
 }
 
-const int yNext(const int k, const /*PointCoordinates pts[]*/double ppts[M][N])
+const int yNext(const int k, const double ppts[M][N])
 {
     int j;
 
@@ -134,7 +85,7 @@ const int yNext(const int k, const /*PointCoordinates pts[]*/double ppts[M][N])
         j = (k + 1);
     }
 
-    while (/*pts[k].y*/ppts[k][1] == /*pts[j].y*/ppts[j][1])
+    while (ppts[k][Y] == ppts[j][Y])
     {
         if ((j + 1) > M)
         {
@@ -145,8 +96,7 @@ const int yNext(const int k, const /*PointCoordinates pts[]*/double ppts[M][N])
             j++;
         }
     }
-
-    return (/*pts[j].y*/ppts[j][1]);
+    return (ppts[j][Y]);
 }
 
 void insertEdge(Edge* list, Edge* edge)
@@ -173,28 +123,26 @@ void insertEdge(Edge* list, Edge* edge)
     q->next = edge;
 }
 
-void makeEdgeRec(const /*PointCoordinates*/ double lowerx, const double lowery, const /*PointCoordinates*/double upperx, const double uppery, const int yComp, Edge* edge, Edge* edges[])
+void makeEdgeRec(const double lowerx, const double lowery, const double upperx, const double uppery, const int yComp, Edge* edge, Edge* edges[])
 {
-    edge->dxPerScan = ((/*upper.x*/upperx - /*lower.x*/lowerx) / (/*upper.y*/uppery - /*lower.y*/lowery));
-    edge->xIntersect = /*lower.x*/lowerx;
+    edge->dxPerScan = ((upperx - lowerx) / (uppery - lowery));
+    edge->xIntersect = lowerx;
 
-    if (/*upper.y*/uppery < yComp)
+    if (uppery < yComp)
     {
-        edge->yUpper = (/*upper.y*/uppery - 1);
+        edge->yUpper = (uppery - 1);
     }
     else
     {
-        edge->yUpper = /*upper.y*/uppery;
+        edge->yUpper = uppery;
     }
 
-    insertEdge(edges[(int)/*lower.y*/lowery], edge);
+    insertEdge(edges[(int)lowery], edge);
 }
 
-void buildEdgeList(/*const PointCoordinates pts[]*/const double ppts[M][N], Edge* edges[])
+void buildEdgeList(const double ppts[M][N], Edge* edges[])
 {
     Edge* edge;
-    //PointCoordinates v1;
-    //PointCoordinates v2;
 
     double v1x;
     double v1y;
@@ -202,35 +150,30 @@ void buildEdgeList(/*const PointCoordinates pts[]*/const double ppts[M][N], Edge
     double v2x;
     double v2y;
 
-    int yPrev = /*(pts[M-1].y)*/ppts[M-1][1];
+    int yPrev = ppts[M-1][Y];
 
-    //v1.x = pts[M].x;
-    //v1.y = pts[M].y;
-
-    v1x = ppts[M][0];
-    v1y = ppts[M][1];
+    v1x = ppts[M][X];
+    v1y = ppts[M][Y];
 
     for (int count = 0; count < M+1; count++)
     {
-        //v2 = pts[count];
-        v2x = ppts[count][0];
-        v2y = ppts[count][1];
+        v2x = ppts[count][X];
+        v2y = ppts[count][Y];
 
-        if (/*v1.y*/v1y != /*v2.y*/v2y)
+        if (v1y != v2y)
         {
             edge = new Edge;
 
-            if (/*v1.y*/v1y < /*v2.y*/v2y)
+            if (v1y < v2y)
             {
-                makeEdgeRec(/*v1, v2,*/v1x, v1y, v2x, v2y, yNext(count, /*pts*/ppts), edge, edges);
+                makeEdgeRec(v1x, v1y, v2x, v2y, yNext(count, ppts), edge, edges);
             }
             else
             {
-                makeEdgeRec(/*v2, v1,*/ v2x, v2y, v1x, v1y, yPrev, edge, edges);
+                makeEdgeRec(v2x, v2y, v1x, v1y, yPrev, edge, edges);
             }
         }
-        yPrev = /*v1.y*/v1y;
-        //v1 = v2;
+        yPrev = v1y;
         v1x = v2x;
         v1y = v2y;
     }
@@ -264,7 +207,7 @@ void fillScan(HDC hdc, const int scan, const Edge* active)
     {
         p2 = p1->next;
 
-        bresenhamline(hdc, p1->xIntersect, scan, p2->xIntersect, scan, 0,0,255);
+        Line(hdc, p1->xIntersect, scan, p2->xIntersect, scan, 0, 0, 255);
 
         p1 = p2->next;
     }
@@ -313,15 +256,15 @@ void resortActiveList(Edge* active)
     }
 }
 
-//BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
-//{
-//	HPEN hPen; //Объявляется кисть
-//	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
-//	SelectObject(hdc, hPen); //Объект делается текущим
-//
-//	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-//	return LineTo(hdc, x2, y2);
-//}
+BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
+{
+	HPEN hPen; //Объявляется кисть
+	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
+	SelectObject(hdc, hPen); //Объект делается текущим
+
+	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
+	return LineTo(hdc, x2, y2);
+}
 
 void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1, int r, int g, int b) // брезенхем
 {

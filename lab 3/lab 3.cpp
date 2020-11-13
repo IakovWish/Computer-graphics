@@ -104,12 +104,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 
 		Fill_polygon(hdc, hexagon);
 
-		bresenhamline(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 0, 0, 255); // 1
-		bresenhamline(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 0, 0, 255); // 2
-		bresenhamline(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 0, 0, 255); // 3
-		bresenhamline(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 0, 0, 255); // 4
-		bresenhamline(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 0, 0, 255); // 5
-		bresenhamline(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 0, 0, 255); // 6
+		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 0, 0, 255); // 1
+		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 0, 0, 255); // 2
+		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 0, 0, 255); // 3
+		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 0, 0, 255); // 4
+		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 0, 0, 255); // 5
+		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 0, 0, 255); // 6
 
 		//закругляемся
 		EndPaint(hWnd, &ps); // заканчиваем рисовать
