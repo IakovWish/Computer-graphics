@@ -8,10 +8,10 @@ using namespace std;
 #define angle 0.0174444444444444
 
 void mul_matrix(double fig[M][N], double mass[N][N]);
-void rotate(double fig[M][N], double angl);
-void scale(double fig[M][N], double S);
-//BOOL Line(HDC hdc, int x1, int y1, int x2, int y2);
-//void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1);
+void rotate(double fig[M][N], double);
+void scale(double fig[M][N], double);
+//BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+//void bresenhamline(HDC, int, int, int, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №3"; // объявляем строку-имя программы
@@ -93,13 +93,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	HDC hdc; //создаём контекст устройства
 	PAINTSTRUCT ps; //создаём экземпляр структуры графического вывода
 
-	int polygon_points[20] = { hexagon[0][0], hexagon[0][1], 
-							   hexagon[1][0], hexagon[1][1],
-							   hexagon[2][0], hexagon[2][1],
-							   hexagon[3][0], hexagon[3][1],
-							   hexagon[4][0], hexagon[4][1],
-							   hexagon[5][0], hexagon[5][1],
-							   hexagon[0][0], hexagon[0][1] };
+	int polygon_points[20] = { hexagon[0][0], hexagon[0][1],
+						   hexagon[1][0], hexagon[1][1],
+						   hexagon[2][0], hexagon[2][1],
+						   hexagon[3][0], hexagon[3][1],
+						   hexagon[4][0], hexagon[4][1],
+						   hexagon[5][0], hexagon[5][1],
+						   hexagon[0][0], hexagon[0][1] };
 
 	//Цикл обработки сообщений
 	switch (messg)
@@ -107,13 +107,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	case WM_PAINT: // сообщение рисования
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
-		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1]); // 1
-		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1]); // 2
-		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1]); // 3
-		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1]); // 4
-		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1]); // 5
-		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1]); // 6
-		
+		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 255); // 1
+		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 255); // 2
+		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 255); // 3
+		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 255); // 4
+		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 255); // 5
+		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 255); // 6
+
 		Fill_polygon(hdc, 7, polygon_points, 9);
 
 		//закругляемся
@@ -160,6 +160,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		default:
 			break;
 		}
+
+		Fill_polygon(hdc, 7, polygon_points, 9);
 
 		/*закругляемся*/
 		InvalidateRect(hWnd, NULL, TRUE);

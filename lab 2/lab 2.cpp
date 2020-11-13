@@ -107,7 +107,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 255); // 6
 
 		//закругляемся
-		ValidateRect(hWnd, NULL); // обновляем окно
 		EndPaint(hWnd, &ps); // заканчиваем рисовать
 		break;
 

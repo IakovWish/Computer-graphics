@@ -65,7 +65,7 @@ const int yNext(const int, const int, const PointCoordinates[]); //
 void Polygon(HDC, const int, const int[]); //
 void Lines(HDC, const int, const int, const int, const int);
 
-BOOL Line(HDC, int, int, int, int, int, int, int);
+BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 
 void Fill_polygon(HDC hdc, const int n, const int ppts[], const int fill_color)
 {
@@ -382,7 +382,7 @@ void Lines(HDC hdc, const int x_1, const int y_1, const int x_2, const int y_2)
     }
 }
 
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r = 0, int g = 0, int b = 0) // обычная линия
+BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
 {
 	HPEN hPen; //Объявляется кисть
 	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
