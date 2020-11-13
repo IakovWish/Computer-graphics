@@ -117,8 +117,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		bresenhamline(hdc, prism[6][0], prism[6][1], prism[7][0], prism[7][1], 255, 0, 0);
 		bresenhamline(hdc, prism[7][0], prism[7][1], prism[4][0], prism[4][1], 255, 0, 0);
 		
-		bresenhamline(hdc, prism[0][0], prism[0][1], prism[4][0], prism[4][1], 0, 255, 0);
-		bresenhamline(hdc, prism[1][0], prism[1][1], prism[5][0], prism[5][1], 0, 255, 0);
+		bresenhamline(hdc, prism[0][0], prism[0][1], prism[4][0], prism[4][1], 0, 255, 255);
+		bresenhamline(hdc, prism[1][0], prism[1][1], prism[5][0], prism[5][1], 0, 255, 255);
+
 		bresenhamline(hdc, prism[2][0], prism[2][1], prism[6][0], prism[6][1], 0, 255, 0);
 		bresenhamline(hdc, prism[3][0], prism[3][1], prism[7][0], prism[7][1], 0, 255, 0);
 

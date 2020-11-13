@@ -20,7 +20,7 @@ public:
 void Fill_polygon(HDC, const double[M][N]); // 
 
 void insertEdge(Edge*, Edge*); //
-void makeEdgeRec(const double, const double, const double,const double, const int, Edge*, Edge* []); //
+void makeEdgeRec(const double, const double, const double, const double, const int, Edge*, Edge* []); //
 void buildEdgeList(const double[M][N], Edge* []); //
 void buildActiveList(const int, Edge*, Edge* []); //
 void fillScan(HDC, const int, const Edge*); //
@@ -31,7 +31,7 @@ void resortActiveList(Edge[]); //
 const int yNext(const int, const double[M][N]); //
 
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
-BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 
 void Fill_polygon(HDC hdc, const double ppts[M][N])
 {
@@ -82,7 +82,7 @@ const int yNext(const int k, const double ppts[M][N])
     }
     else
     {
-        j = (k + 1);
+        j = k + 1;
     }
 
     while (ppts[k][Y] == ppts[j][Y])
@@ -256,14 +256,16 @@ void resortActiveList(Edge* active)
     }
 }
 
-BOOL Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
+void Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
 {
 	HPEN hPen; //Объявляется кисть
 	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
 	SelectObject(hdc, hPen); //Объект делается текущим
 
 	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
-	return LineTo(hdc, x2, y2);
+	LineTo(hdc, x2, y2);
+    SelectObject(hdc, hPen);
+    DeleteObject(hPen);
 }
 
 void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1, int r, int g, int b) // брезенхем
