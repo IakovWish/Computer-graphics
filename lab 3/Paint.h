@@ -35,7 +35,7 @@ void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 
 void Fill_polygon(HDC hdc, const double ppts[M][N])
 {
-    Edge* edges[520];
+    Edge* edges[800];
     Edge* active;
 
     double pppts[M+1][N];
@@ -48,7 +48,7 @@ void Fill_polygon(HDC hdc, const double ppts[M][N])
     pppts[count_1][X] = ppts[0][X];
     pppts[count_1][Y] = ppts[0][Y];
 
-    for (int count_2 = 0; count_2 < 520; count_2++)
+    for (int count_2 = 0; count_2 < 800; count_2++)
     {
         edges[count_2] = new Edge;
         edges[count_2]->next = NULL;
@@ -59,7 +59,7 @@ void Fill_polygon(HDC hdc, const double ppts[M][N])
     active = new Edge;
     active->next = NULL;
 
-    for (int count_3 = 0; count_3 < 520; count_3++)
+    for (int count_3 = 0; count_3 < 800; count_3++)
     {
         buildActiveList(count_3, active, edges);
 

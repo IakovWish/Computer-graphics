@@ -28,12 +28,13 @@ double mD_right[N][N] = { {1, 0, 0},
 						  {0, 1, 0},
 						  {5, 0, 1} };//матрица перемещения направо
 
-double hexagon[M][N] = { {100, 200, 1},
+double hexagon[M][N] = { {10, 10, 1},{40, 10, 1}, {50, 30, 1}, {40, 50, 1}, {10, 50, 1}, {0, 30, 1} };
+/*{ {100, 200, 1},
 						 {300, 400, 1},
 						 {150, 300, 1},
 						 {250, 450, 1},
 						 {350, 500, 1},
-						 {400, 350, 1} };
+						 {400, 350, 1} };*/
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
