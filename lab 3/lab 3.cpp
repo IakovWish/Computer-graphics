@@ -8,25 +8,10 @@ using namespace std;
 void mul_matrix(double fig[M][N], double mass[N][N]);
 void rotate(double fig[M][N], double);
 void scale(double fig[M][N], double);
+void move(double fig[M][N], int dx = 0, int dy = 0);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №3"; // объявляем строку-имя программы
-
-double mD_up[N][N] = { {1, 0, 0},
-					   {0, 1, 0},
-					   {0, -5, 1} };//матрица для перемещения наверх
-
-double mD_down[N][N] = { {1, 0, 0},
-						 {0, 1, 0},
-						 {0, 5,1} };//матрица перемещения вниз
-
-double mD_left[N][N] = { {1, 0, 0},
-						 {0, 1, 0},
-						 {-5,0, 1} };//матрица для перемещения налево
-
-double mD_right[N][N] = { {1, 0, 0},
-						  {0, 1, 0},
-						  {5, 0, 1} };//матрица перемещения направо
 
 double hexagon[M][N] = { {100, 200, 1},
 						 {300, 400, 1},
@@ -119,19 +104,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		switch (wParam)
 		{
 		case VK_LEFT: // Обрабатывает клавишу LEFT ARROW (Стрелка влево).	<
-			mul_matrix(hexagon, mD_left);
+			move(hexagon, -5);
 			break;
 
 		case VK_RIGHT: // Обрабатывает клавишу RIGHT ARROW (Стрелка вправо).	>
-			mul_matrix(hexagon, mD_right);
+			move(hexagon, 5);
 			break;
 
 		case VK_UP: // Обрабатывает клавишу UP ARROW (Стрелка вверх).	\/
-			mul_matrix(hexagon, mD_up);
+			move(hexagon, 0, -5);
 			break;
 
 		case VK_DOWN: // Обрабатывает клавишу DOWN ARROW (Стрелка вниз).	^
-			mul_matrix(hexagon, mD_down);
+			move(hexagon, 0, 5);
 			break;
 
 		case 0xba: // Обрабатывает клавишу ;.	уменьшение
@@ -178,6 +163,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		return(DefWindowProc(hWnd, messg, wParam, lParam)); //освобождаем очередь приложения от нераспознаных
 	}
 	return 0;
+}
+
+void move(double fig[M][N], int dx, int dy)
+{
+	double mover[N][N] = { {1, 0, 0},
+						 {0, 1, 0},
+						 {dx, dy, 1} }; // матрица для перемещения наверх
+	mul_matrix(fig, mover);
 }
 
 void mul_matrix(double fig[M][N], double mass[N][N])
