@@ -1,6 +1,5 @@
 ﻿#include <iostream>
-//#include "Paint.h"
-#include "Paint1.h"
+#include "Paint.h"
 
 using namespace std;
 
@@ -35,6 +34,8 @@ double hexagon[M][N] = { {100, 200, 1},
 						 {250, 450, 1},
 						 {350, 500, 1},
 						 {400, 350, 1} };
+
+int kontur = 0;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -96,22 +97,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	case WM_PAINT: // сообщение рисования
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
-		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 255); // 1
-		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 255); // 2
-		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 255); // 3
-		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 255); // 4
-		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 255); // 5
-		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 255); // 6
-
-		//Fill_polygon(hdc, hexagon);
 		PolyScan(hdc, hexagon);
 
-		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 0, 0, 255); // 1
-		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 0, 0, 255); // 2
-		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 0, 0, 255); // 3
-		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 0, 0, 255); // 4
-		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 0, 0, 255); // 5
-		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 0, 0, 255); // 6
+		if (kontur == 1)
+		{
+			Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 255); // 1
+			Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 255); // 2
+			Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 255); // 3
+			Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 255); // 4
+			Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 255); // 5
+			Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 255); // 6
+		}
 
 		//закругляемся
 		EndPaint(hWnd, &ps); // заканчиваем рисовать
@@ -154,17 +150,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 			rotate(hexagon, angle);
 			break;
 
+		case VK_SPACE: // Обрабатывает пробел
+			if (kontur == 0)
+			{
+				kontur = 1;
+			}
+			else
+			{
+				kontur = 0;
+			}
+			break;
+			
 		default:
 			break;
 		}
 
-		//Fill_polygon(hdc, hexagon);
-		PolyScan(hdc, hexagon);
-
 		/*закругляемся*/
 		InvalidateRect(hWnd, NULL, TRUE);
 		EndPaint(hWnd, &ps); // заканчиваем рисовать
-
 		break;
 
 	case WM_DESTROY: // сообщение выхода - разрушение окна
@@ -192,7 +195,7 @@ void mul_matrix(double fig[M][N], double mass[N][N])
 	}
 	for (int k = 0; k < M; k++)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < N; i++)
 		{
 			fig[k][i] = res[k][i];
 		}
