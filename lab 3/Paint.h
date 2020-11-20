@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <windows.h>  
 
 #define N 3 // размер столбцов матриц
 #define M 6 // количество точек в фигуре
@@ -6,18 +7,18 @@
 #define X 0
 #define Y 1
 
-class Edge
+class Edge // ребро
 {
 public:
-    int yUpper; // верхняя граница y
+    int yUpper; // верхняя граница
 
-    double xIntersect; // x-пересечение
+    double xIntersect; // 
     double dxPerScan; // 
 
-    Edge* next;
+    Edge* next; // указатель на следующее ребро
 };
 
-void Fill_polygon(HDC, const double[M][N]); // 
+void Fill_polygon(HDC, const double[M][N]); // заполнение полигона
 
 void insertEdge(Edge*, Edge*); //
 void makeEdgeRec(const double, const double, const double, const double, const int, Edge*, Edge* []); //
@@ -33,28 +34,28 @@ const int yNext(const int, const double[M][N]); //
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 
-void Fill_polygon(HDC hdc, const double ppts[M][N])
+void Fill_polygon(HDC hdc, const double ppts[M][N]) // заполнение полигона
 {
-    Edge* edges[800];
-    Edge* active;
+    Edge* edges[800]; // создаем массив из 800 ребер
+    Edge* active; // указаатель на активное ребро
 
-    double pppts[M+1][N];
+    double pppts[M+1][N]; // создаем массив точек
     int count_1;
-    for (count_1 = 0; count_1 < M; count_1++)
+    for (count_1 = 0; count_1 < M; count_1++) // заполняем его 
     {
         pppts[count_1][X] = (ppts[count_1][X]);
         pppts[count_1][Y] = (ppts[count_1][Y]);
     }
-    pppts[count_1][X] = ppts[0][X];
-    pppts[count_1][Y] = ppts[0][Y];
+    pppts[count_1][X] = (ppts[0][X]); // последняя точка равна нулевой точке
+    pppts[count_1][Y] = (ppts[0][Y]);
 
-    for (int count_2 = 0; count_2 < 800; count_2++)
+    for (int count_2 = 0; count_2 < 800; count_2++) // выделяем память под 800 ребер
     {
         edges[count_2] = new Edge;
         edges[count_2]->next = NULL;
     }
 
-    buildEdgeList(pppts, edges);
+    buildEdgeList(pppts, edges); // 
 
     active = new Edge;
     active->next = NULL;
@@ -125,7 +126,7 @@ void insertEdge(Edge* list, Edge* edge)
 
 void makeEdgeRec(const double lowerx, const double lowery, const double upperx, const double uppery, const int yComp, Edge* edge, Edge* edges[])
 {
-    edge->dxPerScan = ((upperx - lowerx) / (uppery - lowery));
+    edge->dxPerScan = ((upperx - lowerx) / (uppery - lowery)); // 
     edge->xIntersect = lowerx;
 
     if (uppery < yComp)
@@ -142,15 +143,16 @@ void makeEdgeRec(const double lowerx, const double lowery, const double upperx, 
 
 void buildEdgeList(const double ppts[M][N], Edge* edges[])
 {
-    Edge* edge;
+    Edge* edge; // создаем указатель на ребро
 
-    double v1x;
+    // и создаем переменные - его крайние точки
+    double v1x; 
     double v1y;
 
     double v2x;
     double v2y;
 
-    int yPrev = ppts[M-1][Y];
+    int yPrev = ppts[M-1][Y]; // 
 
     v1x = ppts[M][X];
     v1y = ppts[M][Y];

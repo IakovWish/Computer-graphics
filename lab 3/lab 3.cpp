@@ -1,5 +1,6 @@
 ﻿#include <iostream>
-#include "Paint.h"
+//#include "Paint.h"
+#include "Paint1.h"
 
 using namespace std;
 
@@ -28,13 +29,12 @@ double mD_right[N][N] = { {1, 0, 0},
 						  {0, 1, 0},
 						  {5, 0, 1} };//матрица перемещения направо
 
-double hexagon[M][N] = { {10, 10, 1},{40, 10, 1}, {50, 30, 1}, {40, 50, 1}, {10, 50, 1}, {0, 30, 1} };
-/*{ {100, 200, 1},
+double hexagon[M][N] = { {100, 200, 1},
 						 {300, 400, 1},
 						 {150, 300, 1},
 						 {250, 450, 1},
 						 {350, 500, 1},
-						 {400, 350, 1} };*/
+						 {400, 350, 1} };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -96,14 +96,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	case WM_PAINT: // сообщение рисования
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
-		bresenhamline(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 255); // 1
-		bresenhamline(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 255); // 2
-		bresenhamline(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 255); // 3
-		bresenhamline(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 255); // 4
-		bresenhamline(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 255); // 5
-		bresenhamline(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 255); // 6
+		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 255); // 1
+		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 255); // 2
+		Line(hdc, hexagon[2][0], hexagon[2][1], hexagon[3][0], hexagon[3][1], 255); // 3
+		Line(hdc, hexagon[3][0], hexagon[3][1], hexagon[4][0], hexagon[4][1], 255); // 4
+		Line(hdc, hexagon[4][0], hexagon[4][1], hexagon[5][0], hexagon[5][1], 255); // 5
+		Line(hdc, hexagon[5][0], hexagon[5][1], hexagon[0][0], hexagon[0][1], 255); // 6
 
-		Fill_polygon(hdc, hexagon);
+		//Fill_polygon(hdc, hexagon);
+		PolyScan(hdc, hexagon);
 
 		Line(hdc, hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1], 0, 0, 255); // 1
 		Line(hdc, hexagon[1][0], hexagon[1][1], hexagon[2][0], hexagon[2][1], 0, 0, 255); // 2
@@ -157,7 +158,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 			break;
 		}
 
-		Fill_polygon(hdc, hexagon);
+		//Fill_polygon(hdc, hexagon);
+		PolyScan(hdc, hexagon);
 
 		/*закругляемся*/
 		InvalidateRect(hWnd, NULL, TRUE);

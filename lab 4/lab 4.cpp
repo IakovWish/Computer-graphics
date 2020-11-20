@@ -53,7 +53,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	MSG lpMsg;
 	WNDCLASS w; //создаём экземпляр структуры WNDCLASS
 
-	//И начинаем её заполнять
+	// И начинаем её заполнять
 	w.lpszClassName = szProgName; //имя программы - объявлено выше
 	w.hInstance = hInstance; //идентификатор текущего приложения
 	w.lpfnWndProc = WndProc; //указатель на функцию окна

@@ -225,12 +225,13 @@ void rotate(double fig[M][N], double angl)
 		x1 += fig[i][0];
 	}
 	x1 = x1 / M;
+	
 	for (int i = 0; i < M; i++)
 	{
 		y1 += fig[i][1];
 	}
 	y1 = y1 / M;
-
+	
 	double Angle[N][N] = { {cos(angl), sin(angl), 0},{ -sin(angl), cos(angl), 0},{x1 * (1 - cos(angl)) + y1 * sin(angl), y1 * (1 - cos(angl)) - x1 * sin(angl), 1} };
 	mul_matrix(fig, Angle);
 }
