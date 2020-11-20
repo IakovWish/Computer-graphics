@@ -14,29 +14,40 @@ void rotateY(double fig[M][N], double);
 void rotateZ(double fig[M][N], double);
 void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void move(double fig[M][N], int = 0, int = 0, int = 0);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №4"; // объявляем строку-имя программы
 
-double mD_up[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0}, 
-					   {0, -5, 0, 1} };//матрица для перемещения наверх
+//double mD_up[N][N] = { {1, 0, 0, 0},
+//					   {0, 1, 0, 0},
+//					   {0, 0, 1, 0}, 
+//					   {0, -5, 0, 1} };//матрица для перемещения наверх
+//
+//double mD_down[N][N] = { {1, 0, 0, 0},
+//					   {0, 1, 0, 0},
+//					   {0, 0, 1, 0},
+//					   {0, 5, 0, 1} };//матрица перемещения вниз
 
-double mD_down[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0},
-					   {0, 5, 0, 1} };//матрица перемещения вниз
+//double mD_left[N][N] = { {1, 0, 0, 0},
+//					   {0, 1, 0, 0},
+//					   {0, 0, 1, 0},
+//					   {-5, 0, 0, 1} };//матрица для перемещения налево
 
-double mD_left[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0},
-					   {-5, 0, 0, 1} };//матрица для перемещения налево
-
-double mD_right[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0},
-					   {5, 0, 0, 1} };//матрица перемещения направо
+//double mD_right[N][N] = { {1, 0, 0, 0},
+//					   {0, 1, 0, 0},
+//					   {0, 0, 1, 0},
+//					   {5, 0, 0, 1} };//матрица перемещения направо
+//
+//double mD_Z_up[N][N] = { {1, 0, 0, 0},
+//					   {0, 1, 0, 0},
+//					   {0, 0, 1, 0},
+//					   {0, 0, 5, 1} };//матрица перемещения от нас
+//
+//double mD_Z_down[N][N] = { {1, 0, 0, 0},
+//					   {0, 1, 0, 0},
+//					   {0, 0, 1, 0},
+//					   {0, 0, -5, 1} };//матрица перемещения к нам
 
 double prism[M][N] = { {100, 400, 100, 1},
 						 {100, 200, 100, 1},
@@ -134,19 +145,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		switch (wParam)
 		{
 		case VK_LEFT: // Обрабатывает клавишу LEFT ARROW (Стрелка влево).	<
-			mul_matrix(prism, mD_left);
+			move(prism, -5);
+			//mul_matrix(prism, mD_left);
 			break;
 
 		case VK_RIGHT: // Обрабатывает клавишу RIGHT ARROW (Стрелка вправо).	>
-			mul_matrix(prism, mD_right);
+			move(prism, 5);
+			//mul_matrix(prism, mD_right);
 			break;
 
 		case VK_UP: // Обрабатывает клавишу UP ARROW (Стрелка вверх).	\/
-			mul_matrix(prism, mD_up);
+			move(prism, 0, -5);
+			//mul_matrix(prism, mD_up);
 			break;
 
 		case VK_DOWN: // Обрабатывает клавишу DOWN ARROW (Стрелка вниз).	^
-			mul_matrix(prism, mD_down);
+			move(prism, 0, 5);
+			//mul_matrix(prism, mD_down);
+			break;
+
+		case 0x57: // Обрабатывает клавишу W.
+			move(prism, 0, 0, 5);
+			//mul_matrix(prism, mD_Z_up);
+			break;
+
+		case 0x53: // Обрабатывает клавишу S.
+			move(prism, 0, 0, 5);
+			//mul_matrix(prism, mD_Z_down);
 			break;
 
 		case 0xba: // Обрабатывает клавишу ;.	уменьшение
@@ -214,13 +239,22 @@ double aver(double fig[M][N], int cnt)
 	return average / N;
 }
 
+void move(double fig[M][N], int dx, int dy, int dz)
+{
+	double mover[N][N] = { {1, 0, 0, 0},
+					     {0, 1, 0, 0},
+					     {0, 0, 1, 0},
+					     {dx, dy, dz, 1} }; // матрица для перемещения наверх
+	mul_matrix(fig, mover);
+}
+
 void rotateX(double fig[M][N], double angl)
 {
 	double y = 0, z = 0;
 	y = aver(fig, 1);
 	z = aver(fig, 2);
-	double Angle[N][N] = { {1,0, 0, 0},
-						   {0 , cos(angl), sin(angl),0},
+	double Angle[N][N] = { {1, 0, 0, 0},
+						   {0 , cos(angl), sin(angl), 0},
 						   {0, -sin(angl), cos(angl), 0},
 						   {0, y * (1 - cos(angl)) + z * sin(angl), z * (1 - cos(angl)) - y * sin(angl), 1} };
 	mul_matrix(fig, Angle);
@@ -228,11 +262,11 @@ void rotateX(double fig[M][N], double angl)
 
 void rotateY(double fig[M][N], double angl)
 {
-	double x = 0, y = 0, z = 0;
+	double x = 0, z = 0;
 	x = aver(fig, 0);
 	z = aver(fig, 2);
-	double Angle[N][N] = { {cos(angl),0, -sin(angl), 0},
-						   {0, 1, 0,0},
+	double Angle[N][N] = { {cos(angl), 0, -sin(angl), 0},
+						   {0, 1, 0, 0},
 						   {sin(angl), 0, cos(angl), 0},
 						   {x * (1 - cos(angl)) - z * sin(angl), 0, z * (1 - cos(angl)) + x * sin(angl), 1} };
 	mul_matrix(fig, Angle);

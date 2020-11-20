@@ -6,7 +6,6 @@
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 
-// ******definition of the structure and an active edge list AET new edge table NET * **********************************/
 typedef struct EDGE // структура ребра
 {
     double xIntersect;
@@ -56,7 +55,6 @@ void PolyScan(HDC hdc, double hexagon[M][N])
         {
             if (polypoint[j].y == i)
             {
-                // forming a segment with a point in front of a point, the point is also formed with the back segment  
                 if (polypoint[(j - 1 + M) % M].y > polypoint[j].y)
                 {
                     NET* p = new NET;
@@ -81,34 +79,34 @@ void PolyScan(HDC hdc, double hexagon[M][N])
 
     for (i = 0; i <= MaxY; i++) // устанавливаем и обновляем активную таблицу ребер
     {
-        // Calculate the new intersection x, update AET  
         NET* p = pAET->next; // высчитываем новое X-пересечение, обновляем активные ребра
         while (p)
         {
             p->xIntersect = p->xIntersect + p->dx;
             p = p->next;
         }
-        // update after the new AET first sort ****************************************** ******************* /  
-        // off the table sorting, no longer open space  
+        // обновить после первой сортировки новых активных ребер
         AET* tq = pAET;
         p = pAET->next;
         tq->next = NULL;
         while (p)
         {
             while (tq->next && p->xIntersect >= tq->next->xIntersect)
+            {
                 tq = tq->next;
+            }
             NET* s = p->next;
             p->next = tq->next;
             tq->next = p;
             p = s;
             tq = pAET;
         }
-        // (Improved Algorithm) deleting the node ymax == i Table AET start ******************************* ********* /  
+        
         AET* q = pAET;
         p = q->next;
         while (p)
         {
-            if (p->ymax == i)
+            if (p->ymax == i) // удаляем верхняя точку
             {
                 q->next = p->next;
                 delete p;
@@ -120,7 +118,8 @@ void PolyScan(HDC hdc, double hexagon[M][N])
                 p = q->next;
             }
         }
-        // new point NET added AET, and by interpolation value X is incremented by sorting ******************************* *** /  
+
+        /* в новую точку NET добавляется активное ребро, значение X увеличивается путем сортировки*/
         p = pNET[i]->next;
         q = pAET;
         while (p)
@@ -140,7 +139,7 @@ void PolyScan(HDC hdc, double hexagon[M][N])
         while (p && p->next) // закрашиваем фигуру
         {
             Line(hdc, p->xIntersect, i, p->next->xIntersect+1, i, 0, 0, 255);
-            p = p->next->next;// consider the situation endpoint  
+            p = p->next->next; // переходим к следующей точке
         }
     }
 }
