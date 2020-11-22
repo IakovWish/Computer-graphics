@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <math.h>
 #include "Paint.h"
 
 using namespace std;
@@ -12,31 +13,13 @@ void scale(double fig[M][N], double);
 void rotateX(double fig[M][N], double);
 void rotateY(double fig[M][N], double);
 void rotateZ(double fig[M][N], double);
-//BOOL Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
-//void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
+void move(double fig[M][N], int = 0, int = 0, int = 0);
+void proek(double fig[M][N]);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №5"; // объявляем строку-имя программы
-
-double mD_up[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0},
-					   {0, -5, 0, 1} };//матрица для перемещения наверх
-
-double mD_down[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0},
-					   {0, 5, 0, 1} };//матрица перемещения вниз
-
-double mD_left[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0},
-					   {-5, 0, 0, 1} };//матрица для перемещения налево
-
-double mD_right[N][N] = { {1, 0, 0, 0},
-					   {0, 1, 0, 0},
-					   {0, 0, 1, 0},
-					   {5, 0, 0, 1} };//матрица перемещения направо
 
 double prism[M][N] = { {100, 400, 100, 1},
 						 {100, 200, 100, 1},
@@ -47,7 +30,7 @@ double prism[M][N] = { {100, 400, 100, 1},
 						 {400, 200, 300, 1},
 						 {400, 400, 300, 1} };
 
-double sq[m][n];
+double COPY[M][N];
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -55,7 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	MSG lpMsg;
 	WNDCLASS w; //создаём экземпляр структуры WNDCLASS
 
-	//И начинаем её заполнять
+	// И начинаем её заполнять
 	w.lpszClassName = szProgName; //имя программы - объявлено выше
 	w.hInstance = hInstance; //идентификатор текущего приложения
 	w.lpfnWndProc = WndProc; //указатель на функцию окна
@@ -102,77 +85,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 {
 	HDC hdc; //создаём контекст устройства
 	PAINTSTRUCT ps; //создаём экземпляр структуры графического вывода
-	int k;
 
 	//Цикл обработки сообщений
 	switch (messg)
 	{
 	case WM_PAINT: // сообщение рисования
+
+		for (int i = 0; i < M; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				COPY[i][j] = prism[i][j];
+			}
+		}
+
+		proek(COPY);
+
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
-		k = 0;
 
-		bresenhamline(hdc, prism[0][0], prism[0][1], prism[1][0], prism[1][1], 0, 0, 255);
-		bresenhamline(hdc, prism[1][0], prism[1][1], prism[2][0], prism[2][1], 0, 0, 255);
-		bresenhamline(hdc, prism[2][0], prism[2][1], prism[3][0], prism[3][1], 0, 0, 255);
-		bresenhamline(hdc, prism[3][0], prism[3][1], prism[0][0], prism[0][1], 0, 0, 255);
+		bresenhamline(hdc, COPY[0][0], COPY[0][1], COPY[1][0], COPY[1][1], 0, 0, 255);
+		bresenhamline(hdc, COPY[1][0], COPY[1][1], COPY[2][0], COPY[2][1], 0, 0, 255);
+		bresenhamline(hdc, COPY[2][0], COPY[2][1], COPY[3][0], COPY[3][1], 0, 0, 255);
+		bresenhamline(hdc, COPY[3][0], COPY[3][1], COPY[0][0], COPY[0][1], 0, 0, 255);
 
-		bresenhamline(hdc, prism[4][0], prism[4][1], prism[5][0], prism[5][1], 255, 0, 0);
-		bresenhamline(hdc, prism[5][0], prism[5][1], prism[6][0], prism[6][1], 255, 0, 0);
-		bresenhamline(hdc, prism[6][0], prism[6][1], prism[7][0], prism[7][1], 255, 0, 0);
-		bresenhamline(hdc, prism[7][0], prism[7][1], prism[4][0], prism[4][1], 255, 0, 0);
+		bresenhamline(hdc, COPY[4][0], COPY[4][1], COPY[5][0], COPY[5][1], 255, 0, 0);
+		bresenhamline(hdc, COPY[5][0], COPY[5][1], COPY[6][0], COPY[6][1], 255, 0, 0);
+		bresenhamline(hdc, COPY[6][0], COPY[6][1], COPY[7][0], COPY[7][1], 255, 0, 0);
+		bresenhamline(hdc, COPY[7][0], COPY[7][1], COPY[4][0], COPY[4][1], 255, 0, 0);
 
-		bresenhamline(hdc, prism[0][0], prism[0][1], prism[4][0], prism[4][1], 0, 255, 0);
-		bresenhamline(hdc, prism[1][0], prism[1][1], prism[5][0], prism[5][1], 0, 255, 0);
-		bresenhamline(hdc, prism[2][0], prism[2][1], prism[6][0], prism[6][1], 0, 255, 0);
-		bresenhamline(hdc, prism[3][0], prism[3][1], prism[7][0], prism[7][1], 0, 255, 0);
+		bresenhamline(hdc, COPY[0][0], COPY[0][1], COPY[4][0], COPY[4][1], 0, 255, 255);
+		bresenhamline(hdc, COPY[1][0], COPY[1][1], COPY[5][0], COPY[5][1], 0, 255, 255);
 
-		for (int i = 0; i < m; i++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
-
-		for (int i = 0; i < m; i++, k++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
-
-		for (int i = 0; i < m; i++, k++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
-
-		for (int i = 0; i < m; i++, k++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
-
-		for (int i = 0; i < m; i++, k++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
-
-		for (int i = 0; i < m; i++, k++)
-		{
-			sq[i][0] = prism[k][0];
-			sq[i][1] = prism[k][1];
-		}
-
-		Fill_polygon(hdc, sq);
+		bresenhamline(hdc, COPY[2][0], COPY[2][1], COPY[6][0], COPY[6][1], 0, 255, 0);
+		bresenhamline(hdc, COPY[3][0], COPY[3][1], COPY[7][0], COPY[7][1], 0, 255, 0);
 
 		//закругляемся
 		ValidateRect(hWnd, NULL); // обновляем окно
@@ -185,19 +130,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 		switch (wParam)
 		{
 		case VK_LEFT: // Обрабатывает клавишу LEFT ARROW (Стрелка влево).	<
-			mul_matrix(prism, mD_left);
+			move(prism, -5);
 			break;
 
 		case VK_RIGHT: // Обрабатывает клавишу RIGHT ARROW (Стрелка вправо).	>
-			mul_matrix(prism, mD_right);
+			move(prism, 5);
 			break;
 
 		case VK_UP: // Обрабатывает клавишу UP ARROW (Стрелка вверх).	\/
-			mul_matrix(prism, mD_up);
+			move(prism, 0, -5);
 			break;
 
 		case VK_DOWN: // Обрабатывает клавишу DOWN ARROW (Стрелка вниз).	^
-			mul_matrix(prism, mD_down);
+			move(prism, 0, 5);
+			break;
+
+		case 0x57: // Обрабатывает клавишу W.
+			move(prism, 0, 0, 5);
+			break;
+
+		case 0x53: // Обрабатывает клавишу S.
+			move(prism, 0, 0, -5);
 			break;
 
 		case 0xba: // Обрабатывает клавишу ;.	уменьшение
@@ -243,16 +196,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 void mul_matrix(double fig[M][N], double mass[N][N])
 {
 	double res[M][N] = { 0,0,0,0 };
-	for (int k = 0; k < M; k++) {
-		for (int i = 0; i < N; i++) {
+	for (int k = 0; k < M; k++)
+	{
+		for (int i = 0; i < N; i++)
+		{
 			for (int j = 0; j < N; j++)
+			{
 				res[k][i] += fig[k][j] * mass[j][i];
+			}
 		}
 	}
-	for (int k = 0; k < M; k++) {
+	for (int k = 0; k < M; k++)
+	{
 		for (int i = 0; i < N; i++)
+		{
 			fig[k][i] = res[k][i];
+		}
 	}
+}
+
+void proek(double fig[M][N])
+{
+	double pro[N][N] = { {1, 0, 0, 0},
+						 {0, 1, 0, 0},
+						 {sqrt(2) / 4, sqrt(2) / 4, 0, 1},
+						 {0, 0, 0, 0} }; // кабинетная проекция
+	mul_matrix(fig, pro);
 }
 
 double aver(double fig[M][N], int cnt)
@@ -265,13 +234,22 @@ double aver(double fig[M][N], int cnt)
 	return average / N;
 }
 
+void move(double fig[M][N], int dx, int dy, int dz)
+{
+	double mover[N][N] = { {1, 0, 0, 0},
+						 {0, 1, 0, 0},
+						 {0, 0, 1, 0},
+						 {dx, dy, dz, 1} };
+	mul_matrix(fig, mover);
+}
+
 void rotateX(double fig[M][N], double angl)
 {
 	double y = 0, z = 0;
 	y = aver(fig, 1);
 	z = aver(fig, 2);
-	double Angle[N][N] = { {1,0, 0, 0},
-						   {0 , cos(angl), sin(angl),0},
+	double Angle[N][N] = { {1, 0, 0, 0},
+						   {0 , cos(angl), sin(angl), 0},
 						   {0, -sin(angl), cos(angl), 0},
 						   {0, y * (1 - cos(angl)) + z * sin(angl), z * (1 - cos(angl)) - y * sin(angl), 1} };
 	mul_matrix(fig, Angle);
@@ -279,11 +257,11 @@ void rotateX(double fig[M][N], double angl)
 
 void rotateY(double fig[M][N], double angl)
 {
-	double x = 0, y = 0, z = 0;
+	double x = 0, z = 0;
 	x = aver(fig, 0);
 	z = aver(fig, 2);
-	double Angle[N][N] = { {cos(angl),0, -sin(angl), 0},
-						   {0, 1, 0,0},
+	double Angle[N][N] = { {cos(angl), 0, -sin(angl), 0},
+						   {0, 1, 0, 0},
 						   {sin(angl), 0, cos(angl), 0},
 						   {x * (1 - cos(angl)) - z * sin(angl), 0, z * (1 - cos(angl)) + x * sin(angl), 1} };
 	mul_matrix(fig, Angle);
@@ -312,4 +290,42 @@ void scale(double fig[M][N], double S)
 			  {0,0,S,0},
 			  {x * (1 - S),y * (1 - S),z * (1 - S),1} };
 	mul_matrix(fig, Sx_Sy);
-}	
+}
+
+void bresenhamline(HDC hdc, int x0, int y0, int x1, int y1, int r, int g, int b) // брезенхем
+{
+	int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+	int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+	int err = (dx > dy ? dx : -dy) / 2;
+	int e2 = err;
+
+	for (;;)
+	{
+		SetPixel(hdc, x0, y0, RGB(r, g, b));
+
+		if (x0 == x1 && y0 == y1)
+		{
+			break;
+		}
+		e2 = err;
+		if (e2 > -dx)
+		{
+			err -= dy; x0 += sx;
+		}
+		if (e2 < dy)
+		{
+			err += dx; y0 += sy;
+		}
+	}
+}
+
+void Line(HDC hdc, int x1, int y1, int x2, int y2, int r, int g, int b) // обычная линия
+{
+	HPEN hPen; //Объявляется кисть
+	hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b)); //Создаётся объект
+	SelectObject(hdc, hPen); //Объект делается текущим
+
+	MoveToEx(hdc, x1, y1, NULL); //сделать текущими координаты x1, y1
+	LineTo(hdc, x2, y2);
+	DeleteObject(hPen);
+}
