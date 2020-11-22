@@ -21,6 +21,7 @@ double hexagon[M][N] = { {100, 200, 1},
 						 {400, 350, 1} };
 
 int kontur = 0;
+int figur = 1;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
@@ -82,7 +83,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 	case WM_PAINT: // сообщение рисования
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
-		PolyScan(hdc, hexagon);
+		if (figur == 1)
+		{
+			PolyScan(hdc, hexagon);
+		}
 
 		if (kontur == 1)
 		{
@@ -145,6 +149,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 				kontur = 0;
 			}
 			break;
+
+		case 0x46: // Обрабатывает пробел
+			if (figur == 0)
+			{
+				figur = 1;
+			}
+			else
+			{
+				figur = 0;
+			}
+			break;
 			
 		default:
 			break;
@@ -169,7 +184,7 @@ void move(double fig[M][N], int dx, int dy)
 {
 	double mover[N][N] = { {1, 0, 0},
 						 {0, 1, 0},
-						 {dx, dy, 1} }; // матрица для перемещения наверх
+						 {dx, dy, 1} }; // 
 	mul_matrix(fig, mover);
 }
 

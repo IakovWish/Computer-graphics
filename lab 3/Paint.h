@@ -39,17 +39,27 @@ void PolyScan(HDC hdc, double hexagon[M][N])
         }
     }
 
+    int MinY = MaxY; // самая нижняя y-координата
+    int k;
+    for (k = 0; k < M; k++)
+    {
+        if (polypoint[k].y < MinY)
+        {
+            MinY = polypoint[k].y;
+        }
+    }
+
     AET* pAET = new AET; // таблица активных ребер
     pAET->next = NULL;
 
-    NET* pNET[1024]; // новая таблица ребер
-    for (i = 0; i <= MaxY; i++)
+    NET** pNET = new NET*[MaxY - MinY]; // новая таблица ребер
+    for (i = MinY; i <= MaxY; i++)
     {
-        pNET[i] = new NET;
-        pNET[i]->next = NULL;
+        pNET[i - MinY] = new NET;
+        pNET[i - MinY]->next = NULL;
     }
 
-    for (i = 0; i <= MaxY; i++) // сканируем и заполняем новую таблицу ребер
+    for (i = MinY; i <= MaxY; i++) // сканируем и заполняем новую таблицу ребер
     {
         for (int j = 0; j < M; j++)
         {
@@ -61,8 +71,8 @@ void PolyScan(HDC hdc, double hexagon[M][N])
                     p->xIntersect = polypoint[j].x;
                     p->ymax = polypoint[(j - 1 + M) % M].y;
                     p->dx = (polypoint[(j - 1 + M) % M].x - polypoint[j].x) / (polypoint[(j - 1 + M) % M].y - polypoint[j].y);
-                    p->next = pNET[i]->next;
-                    pNET[i]->next = p;
+                    p->next = pNET[i - MinY]->next;
+                    pNET[i - MinY]->next = p;
                 }
                 if (polypoint[(j + 1 + M) % M].y > polypoint[j].y)
                 {
@@ -70,14 +80,14 @@ void PolyScan(HDC hdc, double hexagon[M][N])
                     p->xIntersect = polypoint[j].x;
                     p->ymax = polypoint[(j + 1 + M) % M].y;
                     p->dx = (polypoint[(j + 1 + M) % M].x - polypoint[j].x) / (polypoint[(j + 1 + M) % M].y - polypoint[j].y);
-                    p->next = pNET[i]->next;
-                    pNET[i]->next = p;
+                    p->next = pNET[i - MinY]->next;
+                    pNET[i - MinY]->next = p;
                 }
             }
         }
     }
 
-    for (i = 0; i <= MaxY; i++) // устанавливаем и обновляем активную таблицу ребер
+    for (i = MinY; i <= MaxY; i++) // устанавливаем и обновляем активную таблицу ребер
     {
         NET* p = pAET->next; // высчитываем новое X-пересечение, обновляем активные ребра
         while (p)
@@ -106,7 +116,7 @@ void PolyScan(HDC hdc, double hexagon[M][N])
         p = q->next;
         while (p)
         {
-            if (p->ymax == i) // удаляем верхняя точку
+            if (p->ymax == i)
             {
                 q->next = p->next;
                 delete p;
@@ -120,7 +130,7 @@ void PolyScan(HDC hdc, double hexagon[M][N])
         }
 
         /* в новую точку NET добавляется активное ребро, значение X увеличивается путем сортировки*/
-        p = pNET[i]->next;
+        p = pNET[i - MinY]->next;
         q = pAET;
         while (p)
         {
@@ -138,7 +148,10 @@ void PolyScan(HDC hdc, double hexagon[M][N])
         p = pAET->next; 
         while (p && p->next) // закрашиваем фигуру
         {
-            Line(hdc, p->xIntersect, i, p->next->xIntersect+1, i, 0, 0, 255);
+            if (i >= 0)
+            {
+                Line(hdc, p->xIntersect, i, p->next->xIntersect + 1, i, 0, 0, 255);
+            }
             p = p->next->next; // переходим к следующей точке
         }
     }
