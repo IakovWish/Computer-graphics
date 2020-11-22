@@ -183,14 +183,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 void move(double fig[M][N], int dx, int dy)
 {
 	double mover[N][N] = { {1, 0, 0},
-						 {0, 1, 0},
-						 {dx, dy, 1} }; // 
+						   {0, 1, 0},
+						   {dx, dy, 1} }; // 
 	mul_matrix(fig, mover);
 }
 
 void mul_matrix(double fig[M][N], double mass[N][N])
 {
-	double res[M][N] = { 0,0,0 };
+	double res[M][N] = { 0, 0, 0 };
 	for (int k = 0; k < M; k++)
 	{
 		for (int i = 0; i < N; i++)

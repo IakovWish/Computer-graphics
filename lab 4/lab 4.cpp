@@ -215,12 +215,12 @@ void mul_matrix(double fig[M][N], double mass[N][N])
 	}
 }
 
-void proek(double fig[M][N])
+void proek(double fig[M][N]) 
 {
 	double pro[N][N] = { {1, 0, 0, 0},
 						 {0, 1, 0, 0},
 						 {sqrt(2) / 4, sqrt(2) / 4, 0, 1},
-						 {0, 0, 0, 0} };
+						 {0, 0, 0, 0} }; // кабинетная проекция
 	mul_matrix(fig, pro);
 }
 
