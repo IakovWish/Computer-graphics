@@ -7,8 +7,6 @@ using namespace std;
 #define N 4 // размер столбцов матриц
 #define M 8 // количество точек в фигуре
 #define angle 0.0174444444444444
-#define D 10
-#define PI 3.14159265
 
 void mul_matrix(double fig[M][N], double mass[N][N]);
 void scale(double fig[M][N], double);
@@ -22,19 +20,6 @@ void proek(double fig[M][N]);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №4"; // объявляем строку-имя программы
-
-double Aspect = 16 / 9;
-double Fov = 2.0944;
-
-
-double h = 1/(tan(Fov / 2));
-double w = Aspect * h;
-
-double NearPlane = 10; // задняя стенка
-double FarPlane = 20; // передняя стненка
-
-double a = FarPlane / (FarPlane - NearPlane);
-double b = NearPlane * a;
 
 double prism[M][N] = { {100, 400, 100, 1},
 						 {100, 200, 100, 1},
@@ -188,27 +173,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 			rotateZ(prism, angle);
 			break;
 
-		//case 0x31: // Обрабатывает клавишу 1.
-		//	X = 0;
-		//	Y = 1;
-		//	Z = 1;
-		//	//proek(prism, 0);
-		//	break;
-
-		//case 0x32: // Обрабатывает клавишу 2.
-		//	X = 1;
-		//	Y = 0;
-		//	Z = 1;
-		//	//proek(prism, 1, 0);
-		//	break;
-
-		//case 0x33: // Обрабатывает клавишу 3.
-		//	X = 1;
-		//	Y = 1;
-		//	Z = 0;
-		//	//proek(prism, 1, 1, 0);
-		//	break;
-
 		default:
 			break;
 		}
@@ -253,10 +217,10 @@ void mul_matrix(double fig[M][N], double mass[N][N])
 
 void proek(double fig[M][N])
 {
-	double pro[N][N] = { {w, 0, 0, 0},
-						 {0, h, 0, 0},
-						 {0, 0, a, 1},
-						 {0, 0, -b, 0} };
+	double pro[N][N] = { {1, 0, 0, 0},
+						 {0, 1, 0, 0},
+						 {sqrt(2) / 4, sqrt(2) / 4, 0, 1},
+						 {0, 0, 0, 0} };
 	mul_matrix(fig, pro);
 }
 
