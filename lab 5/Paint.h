@@ -1,7 +1,7 @@
 #include <Windows.h>
 
-#define N 3 // размер столбцов матриц
-#define M 6 // количество точек в фигуре
+#define Nn 2 // размер столбцов матриц
+#define Mm 4 // количество точек в фигуре
 
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
@@ -17,13 +17,14 @@ struct point // структура точки
 {
     double x;
     double y;
+    double z;
 };
 
-void PolyScan(HDC hdc, double hexagon[M][N])
+void PolyScan(HDC hdc, double hexagon[Mm][Nn], int r = 0, int g = 0, int b = 0)
 {
-    point polypoint[M]; // массив точек
+    point polypoint[Mm]; // массив точек
 
-    for (int count_1 = 0; count_1 < M; count_1++) // заполняем егр
+    for (int count_1 = 0; count_1 < Mm; count_1++) // заполняем егр
     {
         polypoint[count_1].x = round(hexagon[count_1][0]);
         polypoint[count_1].y = round(hexagon[count_1][1]);
@@ -31,7 +32,7 @@ void PolyScan(HDC hdc, double hexagon[M][N])
 
     int MaxY = 0; // самая верхняя y-координата
     int i;
-    for (i = 0; i < M; i++)
+    for (i = 0; i < Mm; i++)
     {
         if (polypoint[i].y > MaxY)
         {
@@ -41,7 +42,7 @@ void PolyScan(HDC hdc, double hexagon[M][N])
 
     int MinY = MaxY; // самая нижняя y-координата
     int k;
-    for (k = 0; k < M; k++)
+    for (k = 0; k < Mm; k++)
     {
         if (polypoint[k].y < MinY)
         {
@@ -61,25 +62,25 @@ void PolyScan(HDC hdc, double hexagon[M][N])
 
     for (i = MinY; i <= MaxY; i++) // сканируем и заполняем новую таблицу ребер
     {
-        for (int j = 0; j < M; j++)
+        for (int j = 0; j < Mm; j++)
         {
             if (polypoint[j].y == i)
             {
-                if (polypoint[(j - 1 + M) % M].y > polypoint[j].y)
+                if (polypoint[(j - 1 + Mm) % Mm].y > polypoint[j].y)
                 {
                     NET* p = new NET;
                     p->xIntersect = polypoint[j].x;
-                    p->ymax = polypoint[(j - 1 + M) % M].y;
-                    p->dx = (polypoint[(j - 1 + M) % M].x - polypoint[j].x) / (polypoint[(j - 1 + M) % M].y - polypoint[j].y);
+                    p->ymax = polypoint[(j - 1 + Mm) % Mm].y;
+                    p->dx = (polypoint[(j - 1 + Mm) % Mm].x - polypoint[j].x) / (polypoint[(j - 1 + Mm) % Mm].y - polypoint[j].y);
                     p->next = pNET[i - MinY]->next;
                     pNET[i - MinY]->next = p;
                 }
-                if (polypoint[(j + 1 + M) % M].y > polypoint[j].y)
+                if (polypoint[(j + 1 + Mm) % Mm].y > polypoint[j].y)
                 {
                     NET* p = new NET;
                     p->xIntersect = polypoint[j].x;
-                    p->ymax = polypoint[(j + 1 + M) % M].y;
-                    p->dx = (polypoint[(j + 1 + M) % M].x - polypoint[j].x) / (polypoint[(j + 1 + M) % M].y - polypoint[j].y);
+                    p->ymax = polypoint[(j + 1 + Mm) % Mm].y;
+                    p->dx = (polypoint[(j + 1 + Mm) % Mm].x - polypoint[j].x) / (polypoint[(j + 1 + Mm) % Mm].y - polypoint[j].y);
                     p->next = pNET[i - MinY]->next;
                     pNET[i - MinY]->next = p;
                 }
@@ -150,7 +151,7 @@ void PolyScan(HDC hdc, double hexagon[M][N])
         {
             if (i >= 0)
             {
-                Line(hdc, p->xIntersect, i, p->next->xIntersect + 1, i, 0, 0, 255);
+                Line(hdc, p->xIntersect, i, p->next->xIntersect + 1, i, r, g, b);
             }
             p = p->next->next; // переходим к следующей точке
         }
