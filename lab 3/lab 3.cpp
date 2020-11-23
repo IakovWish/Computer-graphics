@@ -150,7 +150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 			}
 			break;
 
-		case 0x46: // Обрабатывает пробел
+		case 0x46: // Обрабатывает F
 			if (figur == 0)
 			{
 				figur = 1;
