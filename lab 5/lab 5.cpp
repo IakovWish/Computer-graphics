@@ -420,7 +420,7 @@ void proek(double fig[M][N])
 						 {0, 1, 0, 0},
 						 {0, 0, 0, 0},
 					     {0, 0, 0, 1} };
-	mul_matrix(fig, pro);
+	//mul_matrix(fig, pro);
 }
 
 double aver(double fig[M][N], int cnt)
