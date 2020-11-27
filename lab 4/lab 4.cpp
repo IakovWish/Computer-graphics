@@ -16,7 +16,6 @@ void rotateZ(double fig[M][N], double);
 void Line(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void bresenhamline(HDC, int, int, int, int, int r = 0, int g = 0, int b = 0);
 void move(double fig[M][N], int = 0, int = 0, int = 0);
-void proek(double fig[M][N]);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // Создаём прототип функции окна, которая будет определена ниже
 
 char szProgName[] = "Компьютерная графика ЛР №4"; // объявляем строку-имя программы
@@ -29,6 +28,11 @@ double prism[M][N] = { {100, 400, 100, 1},
 						 {100, 200, 300, 1},
 						 {400, 200, 300, 1},
 						 {400, 400, 300, 1} };
+
+double pro[N][N] = { {1, 0, 0, 0},
+						 {0, 1, 0, 0},
+						 {sqrt(2) / 4, sqrt(2) / 4, 0, 1},
+						 {0, 0, 0, 0} }; // кабинетная проекция
 
 double COPY[M][N];
 
@@ -99,7 +103,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 			}
 		}
 		
-		proek(COPY);
+		mul_matrix(COPY, pro);
 
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
@@ -213,20 +217,6 @@ void mul_matrix(double fig[M][N], double mass[N][N])
 			fig[k][i] = res[k][i];
 		}
 	}
-}
-
-void proek(double fig[M][N]) 
-{
-	double pro[N][N] = { {1, 0, 0, 0},
-						 {0, 1, 0, 0},
-						 {sqrt(2) / 4, sqrt(2) / 4, 0, 1},
-						 {0, 0, 0, 0} }; // кабинетная проекция
-
-	//double pro[N][N] = { {1, 0, 0, 0},
-	//				     {0, 1, 0, 0},
-	//				     {0, 0, 0, 0},
-	//				     {0, 0, 0, 1} }; // кабинетная проекция
-	mul_matrix(fig, pro);
 }
 
 double aver(double fig[M][N], int cnt)

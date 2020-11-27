@@ -41,6 +41,11 @@ double prism[M][N] = { {100, 400, 100, 1},
 						 {400, 200, 300, 1},
 						 {400, 400, 300, 1} };
 
+double pro[N][N] = { {1, 0, 0, 0},
+						 {0, 1, 0, 0},
+						 {sqrt(2) / 4, sqrt(2) / 4, 0, 1},
+						 {0, 0, 0, 0} }; // кабинетная проекция
+
 double COPY[M][N];
 double lilfig[4][2];
 square FIG[6];
@@ -116,7 +121,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 			}
 		}
 
-		proek(COPY);
+		mul_matrix(COPY, pro);
 
 		hdc = BeginPaint(hWnd, &ps); // начинаем рисовать
 
@@ -234,7 +239,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) //
 
 		for (int q = 0; q < 6; q++)
 		{
-
 			FIG[q].mid_z = (FIG[q].P1.z + FIG[q].P2.z + FIG[q].P3.z + FIG[q].P4.z) / 4;
 		}
 
@@ -407,20 +411,6 @@ void mul_matrix(double fig[M][N], double mass[N][N])
 			fig[k][i] = res[k][i];
 		}
 	}
-}
-
-void proek(double fig[M][N])
-{
-	//double pro[N][N] = { {1, 0, 0, 0},
-	//					 {0, 1, 0, 0},
-	//					 {sqrt(2) / 4, sqrt(2) / 4, 0, 1},
-	//					 {0, 0, 0, 0} }; // кабинетная проекция
-
-	double pro[N][N] = { {1, 0, 0, 0},
-						 {0, 1, 0, 0},
-						 {0, 0, 0, 0},
-					     {0, 0, 0, 1} };
-	mul_matrix(fig, pro);
 }
 
 double aver(double fig[M][N], int cnt)
